@@ -10,7 +10,7 @@ namespace ViewModel
 {
     class TranslatePageViewModel
     {
-        public ICommand StartListenUserSpeech { get; set; }
+        private ICommand startListenUserSpeech;
 
         private bool canExecute = true;
 
@@ -23,7 +23,37 @@ namespace ViewModel
         {
             get
             {
-                return " Start listen\nuser speach";
+                return " Start listen\nuser speech";
+            }
+        }
+
+        public bool CanExecute
+        {
+            get
+            {
+                return this.canExecute;
+            }
+
+            set
+            {
+                if (this.canExecute == value)
+                {
+                    return;
+                }
+
+                this.canExecute = value;
+            }
+        }
+
+        public ICommand StartListenUserSpeech
+        {
+            get
+            {
+                return startListenUserSpeech;
+            }
+            set
+            {
+                startListenUserSpeech = value;
             }
         }
 
