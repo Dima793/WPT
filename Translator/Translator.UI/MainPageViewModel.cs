@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Translator.Core;
+using Windows.UI.Popups;
+using Windows.UI.Xaml;
 
 namespace Translator.UI
 {
@@ -15,11 +17,6 @@ namespace Translator.UI
         public string StartButtonContent => " Start listen\nuser speech";
 
         public string StopButtonContent => " Stop listen\nuser speech";
-
-        public void ChangeCanExecute(object obj)
-        {
-            _canExecute = !_canExecute;
-        }
 
         public bool CanExecute
         {
@@ -53,20 +50,46 @@ namespace Translator.UI
 
         private AudioReceiverManager _audioRecevierManager;
 
+        private async void MessageBoxDisplay()
+        {
+            MessageDialog msgbox;
+            if (_canExecute)
+            {
+                msgbox = new MessageDialog("_canExecute became true");
+            }
+            else
+            {
+
+                msgbox = new MessageDialog("_canExecute became false");
+            }
+            await msgbox.ShowAsync();
+        }
+
+        private void ChangeCanExecute()
+        {
+            _canExecute = !_canExecute;
+            StartListenUserSpeech.RaiseCanExecuteChanged();
+            StopListenUserSpeech.RaiseCanExecuteChanged();
+        }
+
         public void StartGetUserSpeech(object obj)
         {
+            ChangeCanExecute();
+            MessageBoxDisplay();
             _audioRecevierManager.GetUserSpeech();
         }
 
         public void StopGetUserSpeech(object obj)
         {
+            ChangeCanExecute();
+            MessageBoxDisplay();
             // some async event for _audioRecevierManager.GetUserSpeech() to stop
         }
 
         public MainPageViewModel()
         {
-            StartListenUserSpeech = new Commands.ListenUserSpeechCommand(StartGetUserSpeech, param => this.CanExecute);//, StopListenUserSpeech
-            StopListenUserSpeech = new Commands.ListenUserSpeechCommand(StopGetUserSpeech, param => this.CanNotExecute);//, StartListenUserSpeech
+            StartListenUserSpeech = new Commands.ListenUserSpeechCommand(StartGetUserSpeech, param => this.CanExecute);
+            StopListenUserSpeech = new Commands.ListenUserSpeechCommand(StopGetUserSpeech, param => this.CanNotExecute);
             _audioRecevierManager = new AudioReceiverManager();
         }
     }

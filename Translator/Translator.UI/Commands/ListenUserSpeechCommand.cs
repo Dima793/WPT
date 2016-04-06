@@ -13,9 +13,13 @@ namespace Translator.UI.Commands
 
         private readonly Predicate<object> _canExecute;
 
-        private ListenUserSpeechCommand _pairCommand;
-
         private event EventHandler CanExecuteChangedInternal;
+
+        public void RaiseCanExecuteChanged()
+        {
+            if (CanExecuteChanged != null)
+                CanExecuteChanged(this, new EventArgs());
+        }
 
         public bool CanExecute(object parameter)
         {
@@ -27,20 +31,7 @@ namespace Translator.UI.Commands
             this._execute(parameter);
         }
 
-        public event EventHandler CanExecuteChanged
-        {
-            add
-            {
-                //CommandManager.RequerySuggested += value;
-                this.CanExecuteChangedInternal += value;
-            }
-
-            remove
-            {
-                //CommandManager.RequerySuggested -= value;
-                this.CanExecuteChangedInternal -= value;
-            }
-        }
+        public event EventHandler CanExecuteChanged;
 
         public void OnCanExecuteChanged()
         {
@@ -56,13 +47,6 @@ namespace Translator.UI.Commands
         {
             this._execute = execute;
             this._canExecute = canExecute;
-        }
-
-        public ListenUserSpeechCommand(Action<object> execute, Predicate<object> canExecute, ListenUserSpeechCommand pairCommand)
-        {
-            this._execute = execute;
-            this._canExecute = canExecute;
-            this._pairCommand = pairCommand;
         }
     }
 }
