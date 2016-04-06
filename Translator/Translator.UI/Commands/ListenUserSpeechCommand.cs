@@ -5,15 +5,27 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Command
+namespace Translator.UI.Commands
 {
-    public class StartListenUserSpeechCommand : ICommand
+    class ListenUserSpeechCommand : ICommand
     {
-        private Action<object> execute;
+        private readonly Action<object> _execute;
 
-        private Predicate<object> canExecute;
+        private readonly Predicate<object> _canExecute;
+
+        private ListenUserSpeechCommand _pairCommand;
 
         private event EventHandler CanExecuteChangedInternal;
+
+        public bool CanExecute(object parameter)
+        {
+            return this._canExecute != null && this._canExecute(parameter);
+        }
+
+        public void Execute(object parameter)
+        {
+            this._execute(parameter);
+        }
 
         public event EventHandler CanExecuteChanged
         {
@@ -30,16 +42,6 @@ namespace Command
             }
         }
 
-        public bool CanExecute(object parameter)
-        {
-            return this.canExecute != null && this.canExecute(parameter);
-        }
-
-        public void Execute(object parameter)
-        {
-            this.execute(parameter);
-        }
-
         public void OnCanExecuteChanged()
         {
             EventHandler handler = this.CanExecuteChangedInternal;
@@ -50,16 +52,17 @@ namespace Command
             }
         }
 
-        public StartListenUserSpeechCommand(Action<object> execute)
+        public ListenUserSpeechCommand(Action<object> execute, Predicate<object> canExecute)
         {
-            this.execute = execute;
-            this.canExecute = param => true;
+            this._execute = execute;
+            this._canExecute = canExecute;
         }
 
-        public StartListenUserSpeechCommand(Action<object> execute, Predicate<object> canExecute)
+        public ListenUserSpeechCommand(Action<object> execute, Predicate<object> canExecute, ListenUserSpeechCommand pairCommand)
         {
-            this.execute = execute;
-            this.canExecute = canExecute;
+            this._execute = execute;
+            this._canExecute = canExecute;
+            this._pairCommand = pairCommand;
         }
     }
 }

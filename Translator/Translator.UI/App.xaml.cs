@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 // Документацию по шаблону "Пустое приложение" см. по адресу http://go.microsoft.com/fwlink/?LinkId=391641
 
-namespace Translator
+namespace Translator.UI
 {
     /// <summary>
     /// Обеспечивает зависящее от конкретного приложения поведение, дополняющее класс Application по умолчанию.
