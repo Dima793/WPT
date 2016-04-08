@@ -7,6 +7,7 @@ using System.Windows.Input;
 using Translator.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
+using Windows.Phone;
 
 namespace Translator.UI
 {
@@ -18,52 +19,17 @@ namespace Translator.UI
 
         public string StopButtonContent => " Stop listen\nuser speech";
 
-        public bool CanExecute
-        {
-            get
-            {
-                return this._canExecute;
-            }
+        public bool CanExecute => this._canExecute;
 
-            set
-            {
-                this._canExecute = value;
-            }
-        }
-
-        public bool CanNotExecute
-        {
-            get
-            {
-                return !this._canExecute;
-            }
-
-            set
-            {
-                this._canExecute = !value;
-            }
-        }
+        public bool CanNotExecute => !this._canExecute;
 
         public Commands.ListenUserSpeechCommand StartListenUserSpeech { get; set; }
 
         public Commands.ListenUserSpeechCommand StopListenUserSpeech { get; set; }
 
-        private AudioReceiverManager _audioRecevierManager;
+        private readonly AudioReceiverManager _audioRecevierManager;
 
-        private async void MessageBoxDisplay()
-        {
-            MessageDialog msgbox;
-            if (_canExecute)
-            {
-                msgbox = new MessageDialog("_canExecute became true");
-            }
-            else
-            {
-
-                msgbox = new MessageDialog("_canExecute became false");
-            }
-            await msgbox.ShowAsync();
-        }
+        private string _receivedText;
 
         private void ChangeCanExecute()
         {
@@ -72,18 +38,16 @@ namespace Translator.UI
             StopListenUserSpeech.RaiseCanExecuteChanged();
         }
 
-        public void StartGetUserSpeech(object obj)
+        public async void StartGetUserSpeech(object obj)
         {
             ChangeCanExecute();
-            MessageBoxDisplay();
-            _audioRecevierManager.GetUserSpeech();
+            _receivedText = await _audioRecevierManager.GetUserSpeech();
         }
 
         public void StopGetUserSpeech(object obj)
         {
             ChangeCanExecute();
-            MessageBoxDisplay();
-            // some async event for _audioRecevierManager.GetUserSpeech() to stop
+            _audioRecevierManager.StopGetUserSpeech();
         }
 
         public MainPageViewModel()

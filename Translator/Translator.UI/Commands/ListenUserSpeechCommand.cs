@@ -13,8 +13,6 @@ namespace Translator.UI.Commands
 
         private readonly Predicate<object> _canExecute;
 
-        private event EventHandler CanExecuteChangedInternal;
-
         public void RaiseCanExecuteChanged()
         {
             if (CanExecuteChanged != null)
@@ -32,16 +30,6 @@ namespace Translator.UI.Commands
         }
 
         public event EventHandler CanExecuteChanged;
-
-        public void OnCanExecuteChanged()
-        {
-            EventHandler handler = this.CanExecuteChangedInternal;
-            if (handler != null)
-            {
-                //DispatcherHelper.BeginInvokeOnUIThread(() => handler.Invoke(this, EventArgs.Empty));
-                handler.Invoke(this, EventArgs.Empty);
-            }
-        }
 
         public ListenUserSpeechCommand(Action<object> execute, Predicate<object> canExecute)
         {
