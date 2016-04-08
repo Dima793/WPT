@@ -1,18 +1,20 @@
-﻿using System.Reflection;
+﻿using System.Resources;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// Общие сведения о сборке можно задать с помощью следующего 
-// набора атрибутов. Отредактируйте эти значения атрибутов, чтобы изменить сведения,
+// Общие сведения о сборке определяются следующим 
+// набором атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные с этой сборкой.
-[assembly: AssemblyTitle("Translator")]
+[assembly: AssemblyTitle("Translator.Core")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Translator")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyProduct("Translator.Core")]
+[assembly: AssemblyCopyright("©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+[assembly: NeutralResourcesLanguage("ru")]
 
 // Сведения о версии сборки состоят из следующих четырех значений:
 //
@@ -22,8 +24,7 @@ using System.Runtime.InteropServices;
 //      Редакция
 //
 // Можно задать все значения или принять номера сборки и редакции по умолчанию 
-// используя "*", как показано ниже:
-// [сборка: AssemblyVersion("1.0.*")]
+// указав "*", как показано ниже:
+// [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: ComVisible(false)]
