@@ -1,41 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Navigation;
-using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
-using Translator.UI.Resources;
+using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
+
+// Документацию по шаблону элемента "Пустая страница" см. по адресу http://go.microsoft.com/fwlink/?LinkId=391641
 
 namespace Translator.UI
 {
-    public partial class MainPage : PhoneApplicationPage
+    /// <summary>
+    /// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
+    /// </summary>
+    public sealed partial class MainPage : Page
     {
-        // Constructor
         public MainPage()
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
-            // Sample code to localize the ApplicationBar
-            //BuildLocalizedApplicationBar();
+            this.NavigationCacheMode = NavigationCacheMode.Required;
         }
 
-        // Sample code for building a localized ApplicationBar
-        //private void BuildLocalizedApplicationBar()
-        //{
-        //    // Set the page's ApplicationBar to a new instance of ApplicationBar.
-        //    ApplicationBar = new ApplicationBar();
+        /// <summary>
+        /// Вызывается перед отображением этой страницы во фрейме.
+        /// </summary>
+        /// <param name="e">Данные события, описывающие, каким образом была достигнута эта страница.
+        /// Этот параметр обычно используется для настройки страницы.</param>
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            // TODO: Подготовьте здесь страницу для отображения.
 
-        //    // Create a new button and set the text value to the localized string from AppResources.
-        //    ApplicationBarIconButton appBarButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/appbar.add.rest.png", UriKind.Relative));
-        //    appBarButton.Text = AppResources.AppBarButtonText;
-        //    ApplicationBar.Buttons.Add(appBarButton);
-
-        //    // Create a new menu item with the localized string from AppResources.
-        //    ApplicationBarMenuItem appBarMenuItem = new ApplicationBarMenuItem(AppResources.AppBarMenuItemText);
-        //    ApplicationBar.MenuItems.Add(appBarMenuItem);
-        //}
+            // TODO: Если приложение содержит несколько страниц, обеспечьте
+            // обработку нажатия аппаратной кнопки "Назад", выполнив регистрацию на
+            // событие Windows.Phone.UI.Input.HardwareButtons.BackPressed.
+            // Если вы используете NavigationHelper, предоставляемый некоторыми шаблонами,
+            // данное событие обрабатывается для вас.
+        }
     }
 }
