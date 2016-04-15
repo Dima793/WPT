@@ -4,7 +4,7 @@ using Translator.Core;
 
 namespace Translator.UI
 {
-    class SpeakPageViewModel : INotifyPropertyChanged
+    public class SpeakPageViewModel : INotifyPropertyChanged
     {
         private TextSpeaker _speaker;
 
@@ -24,7 +24,7 @@ namespace Translator.UI
             }
         }
 
-        public ICommand pronounceCommand { get; set; }
+        public ICommand PronounceCommand { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -40,12 +40,7 @@ namespace Translator.UI
         {
             Message = "Write something...";
             _speaker = new TextSpeaker();
-            pronounceCommand = new RelayCommand(() => Pronounce());
-        }
-
-        private void Pronounce()
-        {
-            _speaker.Speak(_message);
+            PronounceCommand = new RelayCommand(() => _speaker.Speak(_message));
         }
     }
 }

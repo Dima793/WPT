@@ -61,8 +61,6 @@ Global
 		{640FC99C-73D9-4D5F-B411-156141537032}.Release|ARM.Build.0 = Release|ARM
 		{640FC99C-73D9-4D5F-B411-156141537032}.Release|ARM.Deploy.0 = Release|ARM
 		{640FC99C-73D9-4D5F-B411-156141537032}.Release|x86.ActiveCfg = Release|x86
-		{640FC99C-73D9-4D5F-B411-156141537032}.Release|x86.Build.0 = Release|x86
-		{640FC99C-73D9-4D5F-B411-156141537032}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

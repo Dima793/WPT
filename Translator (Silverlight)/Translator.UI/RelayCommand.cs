@@ -17,10 +17,6 @@ namespace Translator.UI
 
         public RelayCommand(Action execute, Func<bool> canExecute)
         {
-            if (execute == null)
-            {
-                throw new ArgumentNullException("execute");
-            }
             _execute = execute;
             _canExecute = canExecute;
         }
