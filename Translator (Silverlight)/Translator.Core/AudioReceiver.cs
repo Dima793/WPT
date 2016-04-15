@@ -16,7 +16,7 @@ namespace Translator.Core
 
         private async void MessageBoxDisplay(string s)
         {   
-            _msgbox = new MessageBox(s);
+            _msgbox = new MessageDialog(s);
             await _msgbox.ShowAsync();
         }*/
 
