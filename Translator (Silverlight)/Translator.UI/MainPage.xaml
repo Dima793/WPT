@@ -5,12 +5,14 @@
     xmlns:local="using:Translator.UI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="clr-namespace:Translator.UI"
+    xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=Microsoft.Phone"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" x:ClassModifier="internal">
 
-    <Page.DataContext>
-        <local:MainPageViewModel/>
-    </Page.DataContext>
+    <navigation:Page.DataContext>
+        <ui:MainPageViewModel/>
+    </navigation:Page.DataContext>
 
     <Grid>
         <Grid.RowDefinitions>

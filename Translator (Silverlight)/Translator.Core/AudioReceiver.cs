@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Windows;
 using Windows.UI.Popups;
 //using Windows.Phone.Speech.Recognition;
@@ -10,14 +11,14 @@ using Windows.UI.Popups;
 namespace Translator.Core
 {
     class AudioReceiver
-    {
+    {/*
         MessageDialog _msgbox;
 
         private async void MessageBoxDisplay(string s)
         {   
-            _msgbox = new MessageDialog(s);
+            _msgbox = new MessageBox(s);
             await _msgbox.ShowAsync();
-        }
+        }*/
 
         private bool _isListening = false;
 
@@ -25,7 +26,7 @@ namespace Translator.Core
         {
             //this._reco.Close();
             _isListening = false;
-            MessageBoxDisplay("Stopped");
+            //MessageBoxDisplay("Stopped");
         }
 
         //private SpeechRecognizer _reco = new SpeechRecognizer();
@@ -34,7 +35,7 @@ namespace Translator.Core
 
         public async Task<string> StartVoiceReceivingAsync()
         {
-            MessageBoxDisplay("Started");
+            //MessageBoxDisplay("Started");
             _isListening = true;
             //recoResult = await _reco.RecognizeAsync();
             await Task.Factory.StartNew(() =>// just something to await while _reco.RecognizeAsync() is not able to be used

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Translator.Core;
 using Windows.UI.Popups;
-using Windows.UI.Xaml;
+//using Windows.UI.Xaml;
 using Windows.Phone;
 
 namespace Translator.UI
