@@ -1,17 +1,23 @@
 ﻿<phone:PhoneApplicationPage
-    x:Class="Translator.UI.SpeakPage"
+    x:Class="Translator.UI.SpeakPageView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:Translator.UI"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="True">
+
+    <!-- Sets the DataContext for the page. -->
+    <phone:PhoneApplicationPage.DataContext>
+        <local:SpeakPageViewModel/>
+    </phone:PhoneApplicationPage.DataContext>
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
@@ -22,17 +28,15 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="MY APPLICATION" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock Text="page name" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+            <TextBlock Text="Text to speech" Margin="9,-7,0,0" Style="{StaticResource PhoneTextExtraLargeStyle}"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <StackPanel>
-                <TextBox MaxLength="250" Text="Enter the word..." TextChanged="WordBlockChanged"/>
-                <TextBlock x:Name="WordBlock" />
+                <TextBox MaxLength="250" Text="{Binding Message, Mode=TwoWay}"/>
             </StackPanel>
-            <Button x:Name="WordButton" Content="Translate to speech" Width="270" Height="90" Margin="93,83,93,434" Click="WordButtonClick"/>
+            <Button x:Name="PronounceButton" Content="Pronounce" Width="270" Height="90" Margin="93,75,93,508" Command="{Binding Pronounce}"/>
         </Grid>
     </Grid>
 

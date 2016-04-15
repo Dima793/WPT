@@ -24,7 +24,7 @@ namespace Translator.UI
 
         private void GoButtonClick(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(new Uri("/SpeakPage.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/SpeakPageView.xaml", UriKind.Relative));
         }
 
         // Sample code for building a localized ApplicationBar
