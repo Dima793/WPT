@@ -3,9 +3,9 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Resources;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
+// Управление общими сведениями о сборке осуществляется с помощью следующего 
+// набора атрибутов. Измените значения этих атрибутов для изменения
+// сведений о сборке.
 [assembly: AssemblyTitle("Translator.UI")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
@@ -15,23 +15,23 @@ using System.Resources;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
+// Если для ComVisible установить значение false, типы в этой сборке не будут поддерживаться 
+// COM-компонентами.  При необходимости доступа к какому-либо типу в этой сборке 
+// из модели COM задайте для атрибута ComVisible этого типа значение true.
 [assembly: ComVisible(false)]
 
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("9e474913-fd7c-4d7a-b1f9-71940fad9d80")]
+// Следующий GUID служит для идентификации библиотеки типов, если данный проект видим для COM
+[assembly: Guid("72e2fe15-7449-4327-9318-158dc7589136")]
 
-// Version information for an assembly consists of the following four values:
+// Сведения о версии сборки состоят из следующих четырех значений:
 //
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
+//      Основной номер версии
+//      Дополнительный номер версии 
+//   Номер сборки
+//      Редакция
 //
-// You can specify all the values or you can default the Revision and Build Numbers 
-// by using the '*' as shown below:
+// Можно задать все значения или принять номера сборки и редакции по умолчанию 
+// с помощью символа '*', как показано ниже:
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: NeutralResourcesLanguageAttribute("en-US")]
+[assembly: NeutralResourcesLanguageAttribute("ru-RU")]

@@ -13,203 +13,203 @@ namespace Translator.UI
     public partial class App : Application
     {
         /// <summary>
-        /// Provides easy access to the root frame of the Phone Application.
+        /// Обеспечивает быстрый доступ к корневому кадру приложения телефона.
         /// </summary>
-        /// <returns>The root frame of the Phone Application.</returns>
+        /// <returns>Корневой кадр приложения телефона.</returns>
         public static PhoneApplicationFrame RootFrame { get; private set; }
 
         /// <summary>
-        /// Constructor for the Application object.
+        /// Конструктор объекта приложения.
         /// </summary>
         public App()
         {
-            // Global handler for uncaught exceptions.
+            // Глобальный обработчик неперехваченных исключений.
             UnhandledException += Application_UnhandledException;
 
-            // Standard XAML initialization
+            // Стандартная инициализация XAML
             InitializeComponent();
 
-            // Phone-specific initialization
+            // Инициализация телефона
             InitializePhoneApplication();
 
-            // Language display initialization
+            // Инициализация отображения языка
             InitializeLanguage();
 
-            // Show graphics profiling information while debugging.
+            // Отображение сведений о профиле графики во время отладки.
             if (Debugger.IsAttached)
             {
-                // Display the current frame rate counters.
+                // Отображение текущих счетчиков частоты смены кадров.
                 Application.Current.Host.Settings.EnableFrameRateCounter = true;
 
-                // Show the areas of the app that are being redrawn in each frame.
+                // Отображение областей приложения, перерисовываемых в каждом кадре.
                 //Application.Current.Host.Settings.EnableRedrawRegions = true;
 
-                // Enable non-production analysis visualization mode,
-                // which shows areas of a page that are handed off to GPU with a colored overlay.
+                // Включение режима визуализации анализа нерабочего кода,
+                // для отображения областей страницы, переданных в GPU, с цветным наложением.
                 //Application.Current.Host.Settings.EnableCacheVisualization = true;
 
-                // Prevent the screen from turning off while under the debugger by disabling
-                // the application's idle detection.
-                // Caution:- Use this under debug mode only. Application that disables user idle detection will continue to run
-                // and consume battery power when the user is not using the phone.
+                // Предотвратить выключение экрана в режиме отладчика путем отключения
+                // определения состояния простоя приложения.
+                // Внимание! Используйте только в режиме отладки. Приложение, в котором отключено обнаружение бездействия пользователя, будет продолжать работать
+                // и потреблять энергию батареи, когда телефон не будет использоваться.
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
         }
 
-        // Code to execute when the application is launching (eg, from Start)
-        // This code will not execute when the application is reactivated
+        // Код для выполнения при запуске приложения (например, из меню "Пуск")
+        // Этот код не будет выполняться при повторной активации приложения
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
         }
 
-        // Code to execute when the application is activated (brought to foreground)
-        // This code will not execute when the application is first launched
+        // Код для выполнения при активации приложения (переводится в основной режим)
+        // Этот код не будет выполняться при первом запуске приложения
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
         }
 
-        // Code to execute when the application is deactivated (sent to background)
-        // This code will not execute when the application is closing
+        // Код для выполнения при деактивации приложения (отправляется в фоновый режим)
+        // Этот код не будет выполняться при закрытии приложения
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
         }
 
-        // Code to execute when the application is closing (eg, user hit Back)
-        // This code will not execute when the application is deactivated
+        // Код для выполнения при закрытии приложения (например, при нажатии пользователем кнопки "Назад")
+        // Этот код не будет выполняться при деактивации приложения
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
         }
 
-        // Code to execute if a navigation fails
+        // Код для выполнения в случае ошибки навигации
         private void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
             if (Debugger.IsAttached)
             {
-                // A navigation has failed; break into the debugger
+                // Ошибка навигации; перейти в отладчик
                 Debugger.Break();
             }
         }
 
-        // Code to execute on Unhandled Exceptions
+        // Код для выполнения на необработанных исключениях
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
             if (Debugger.IsAttached)
             {
-                // An unhandled exception has occurred; break into the debugger
+                // Произошло необработанное исключение; перейти в отладчик
                 Debugger.Break();
             }
         }
 
-        #region Phone application initialization
+        #region Инициализация приложения телефона
 
-        // Avoid double-initialization
+        // Избегайте двойной инициализации
         private bool phoneApplicationInitialized = false;
 
-        // Do not add any additional code to this method
+        // Не добавляйте в этот метод дополнительный код
         private void InitializePhoneApplication()
         {
             if (phoneApplicationInitialized)
                 return;
 
-            // Create the frame but don't set it as RootVisual yet; this allows the splash
-            // screen to remain active until the application is ready to render.
+            // Создайте кадр, но не задавайте для него значение RootVisual; это позволит
+            // экрану-заставке оставаться активным, пока приложение не будет готово для визуализации.
             RootFrame = new PhoneApplicationFrame();
             RootFrame.Navigated += CompleteInitializePhoneApplication;
 
-            // Handle navigation failures
+            // Обработка сбоев навигации
             RootFrame.NavigationFailed += RootFrame_NavigationFailed;
 
-            // Handle reset requests for clearing the backstack
+            // Обработка запросов на сброс для очистки стека переходов назад
             RootFrame.Navigated += CheckForResetNavigation;
 
-            // Ensure we don't initialize again
+            // Убедитесь, что инициализация не выполняется повторно
             phoneApplicationInitialized = true;
         }
 
-        // Do not add any additional code to this method
+        // Не добавляйте в этот метод дополнительный код
         private void CompleteInitializePhoneApplication(object sender, NavigationEventArgs e)
         {
-            // Set the root visual to allow the application to render
+            // Задайте корневой визуальный элемент для визуализации приложения
             if (RootVisual != RootFrame)
                 RootVisual = RootFrame;
 
-            // Remove this handler since it is no longer needed
+            // Удалите этот обработчик, т.к. он больше не нужен
             RootFrame.Navigated -= CompleteInitializePhoneApplication;
         }
 
         private void CheckForResetNavigation(object sender, NavigationEventArgs e)
         {
-            // If the app has received a 'reset' navigation, then we need to check
-            // on the next navigation to see if the page stack should be reset
+            // Если приложение получило навигацию "reset", необходимо проверить
+            // при следующей навигации, чтобы проверить, нужно ли выполнять сброс стека
             if (e.NavigationMode == NavigationMode.Reset)
                 RootFrame.Navigated += ClearBackStackAfterReset;
         }
 
         private void ClearBackStackAfterReset(object sender, NavigationEventArgs e)
         {
-            // Unregister the event so it doesn't get called again
+            // Отменить регистрацию события, чтобы оно больше не вызывалось
             RootFrame.Navigated -= ClearBackStackAfterReset;
 
-            // Only clear the stack for 'new' (forward) and 'refresh' navigations
+            // Очистка стека только для "новых" навигаций (вперед) и навигаций "обновления"
             if (e.NavigationMode != NavigationMode.New && e.NavigationMode != NavigationMode.Refresh)
                 return;
 
-            // For UI consistency, clear the entire page stack
+            // Очистка всего стека страницы для согласованности пользовательского интерфейса
             while (RootFrame.RemoveBackEntry() != null)
             {
-                ; // do nothing
+                ; // ничего не делать
             }
         }
 
         #endregion
 
-        // Initialize the app's font and flow direction as defined in its localized resource strings.
+        // Инициализация шрифта приложения и направления текста, как определено в локализованных строках ресурсов.
         //
-        // To ensure that the font of your application is aligned with its supported languages and that the
-        // FlowDirection for each of those languages follows its traditional direction, ResourceLanguage
-        // and ResourceFlowDirection should be initialized in each resx file to match these values with that
-        // file's culture. For example:
+        // Чтобы убедиться, что шрифт приложения соответствует поддерживаемым языкам, а
+        // FlowDirection для каждого из этих языков соответствует традиционному направлению, ResourceLanguage
+        // и ResourceFlowDirection необходимо инициализировать в каждом RESX-файле, чтобы эти значения совпадали с
+        // культурой файла. Пример:
         //
         // AppResources.es-ES.resx
-        //    ResourceLanguage's value should be "es-ES"
-        //    ResourceFlowDirection's value should be "LeftToRight"
+        //    Значение ResourceLanguage должно равняться "es-ES"
+        //    Значение ResourceFlowDirection должно равняться "LeftToRight"
         //
         // AppResources.ar-SA.resx
-        //     ResourceLanguage's value should be "ar-SA"
-        //     ResourceFlowDirection's value should be "RightToLeft"
+        //     Значение ResourceLanguage должно равняться "ar-SA"
+        //     Значение ResourceFlowDirection должно равняться "RightToLeft"
         //
-        // For more info on localizing Windows Phone apps see http://go.microsoft.com/fwlink/?LinkId=262072.
+        // Дополнительные сведения о локализации приложений Windows Phone см. на странице http://go.microsoft.com/fwlink/?LinkId=262072.
         //
         private void InitializeLanguage()
         {
             try
             {
-                // Set the font to match the display language defined by the
-                // ResourceLanguage resource string for each supported language.
+                // Задать шрифт в соответствии с отображаемым языком, определенным
+                // строкой ресурса ResourceLanguage для каждого поддерживаемого языка.
                 //
-                // Fall back to the font of the neutral language if the Display
-                // language of the phone is not supported.
+                // Откат к шрифту нейтрального языка, если отображаемый
+                // язык телефона не поддерживается.
                 //
-                // If a compiler error is hit then ResourceLanguage is missing from
-                // the resource file.
+                // Если возникла ошибка компилятора, ResourceLanguage отсутствует в
+                // файл ресурсов.
                 RootFrame.Language = XmlLanguage.GetLanguage(AppResources.ResourceLanguage);
 
-                // Set the FlowDirection of all elements under the root frame based
-                // on the ResourceFlowDirection resource string for each
-                // supported language.
+                // Установка FlowDirection для всех элементов в корневом кадре на основании
+                // строки ресурса ResourceFlowDirection для каждого
+                // поддерживаемого языка.
                 //
-                // If a compiler error is hit then ResourceFlowDirection is missing from
-                // the resource file.
+                // Если возникла ошибка компилятора, ResourceFlowDirection отсутствует в
+                // файл ресурсов.
                 FlowDirection flow = (FlowDirection)Enum.Parse(typeof(FlowDirection), AppResources.ResourceFlowDirection);
                 RootFrame.FlowDirection = flow;
             }
             catch
             {
-                // If an exception is caught here it is most likely due to either
-                // ResourceLangauge not being correctly set to a supported language
-                // code or ResourceFlowDirection is set to a value other than LeftToRight
-                // or RightToLeft.
+                // Если здесь перехвачено исключение, вероятнее всего это означает, что
+                // для ResourceLangauge неправильно задан код поддерживаемого языка
+                // или для ResourceFlowDirection задано значение, отличное от LeftToRight
+                // или RightToLeft.
 
                 if (Debugger.IsAttached)
                 {

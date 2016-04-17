@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace Translator.UI.Commands
 {
-    class ListenUserSpeechCommand : ICommand
+    public class ListenUserSpeechCommand : ICommand
     {
         private readonly Action<object> _execute;
 

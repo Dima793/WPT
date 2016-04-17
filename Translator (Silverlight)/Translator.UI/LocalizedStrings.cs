@@ -3,7 +3,7 @@
 namespace Translator.UI
 {
     /// <summary>
-    /// Provides access to string resources.
+    /// Предоставляет доступ к строковым ресурсам.
     /// </summary>
     public class LocalizedStrings
     {

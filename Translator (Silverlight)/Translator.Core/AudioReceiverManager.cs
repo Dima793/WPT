@@ -13,6 +13,16 @@ namespace Translator.Core
         public async Task<string> GetUserSpeech()
         {
             return await _audioRecevier.StartVoiceReceivingAsync();
+            /*
+            if (_recoResult.GetResults().TextConfidence == SpeechRecognitionConfidence.Rejected)
+            {
+                MessageBoxDisplay("Sorry, didn't catch that. \n\nSay again.");
+            }
+            else if (_recoResult.GetResults().TextConfidence == SpeechRecognitionConfidence.Low)
+            {
+                MessageBoxDisplay("Not sure what you said. \n\nSay again.");
+            }
+            */
         }
 
         public void StopGetUserSpeech()
