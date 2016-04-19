@@ -12,7 +12,7 @@ namespace Translator.Core
 
         public async Task<string> GetUserSpeech()
         {
-            return await _audioRecevier.StartVoiceReceivingAsync();
+            return await _audioRecevier.ReceiveVoiceAsync();
             /*
             if (_recoResult.GetResults().TextConfidence == SpeechRecognitionConfidence.Rejected)
             {
