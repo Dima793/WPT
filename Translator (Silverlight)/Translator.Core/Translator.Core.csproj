@@ -87,6 +87,7 @@
     <Compile Include="AudioReceiverManager.cs" />
     <Compile Include="AudioToTextConv.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TextSpeaker.cs" />
     <Compile Include="Translator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
