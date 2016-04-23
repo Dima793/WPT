@@ -21,9 +21,8 @@
     </phone:PhoneApplicationPage.DataContext>
 
     <phone:PhoneApplicationPage.Resources>
-        <core:Language x:Key="Language"/>
         <DataTemplate x:Key="ItemTemplate">
-            <TextBlock DataContext="{StaticResource Language}" Text="{Binding Full}"/>
+            <TextBlock Text="{Binding FullName}"/>
         </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
 
@@ -52,11 +51,11 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" Text="source language" Margin="12,0,250,0" />
-            <toolkit:ListPicker ItemsSource="{Binding SourceLanguages}"
+            <toolkit:ListPicker ItemsSource="{Binding SourceLanguages}" SelectedItem="{Binding CurrentSourceLanguage, Mode=TwoWay}"
                 ItemTemplate="{StaticResource ItemTemplate}" FullModeItemTemplate="{StaticResource ItemTemplate}"
                 x:Name="SourceLanguage" FullModeHeader="source language" Grid.Row="1" Margin="12,0,250,0"/>
             <TextBlock Grid.Row="0" Text="target language" Margin="250,0,12,0" />
-            <toolkit:ListPicker ItemsSource="{Binding TargetLanguages}"
+            <toolkit:ListPicker ItemsSource="{Binding TargetLanguages}" SelectedItem="{Binding CurrentTargetLanguage, Mode=TwoWay}"
             	ItemTemplate="{StaticResource ItemTemplate}" FullModeItemTemplate="{StaticResource ItemTemplate}"
             	x:Name="TargetLanguage" FullModeHeader="target Language" Grid.Row="1" Margin="250,0,12,0"/>
             <Button Grid.Row="2" Command="{Binding ListenUserSpeechCommand}" 

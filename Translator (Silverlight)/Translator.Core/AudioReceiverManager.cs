@@ -16,9 +16,13 @@ namespace Translator.Core
 
         //private bool _resultIsAcceptable;
 
-        public async Task<string> GetUserSpeech()
+        public async Task<string> GetUserSpeech(string language)
         {
-
+            if ((language == "ru-RU") || (language == "ja-JP"))
+            {
+                MessageBox.Show("Sorry, no unicode support yet");
+                return String.Empty;
+            }
             //do
             //{
             //    _recoResult = await _audioRecevier.StartVoiceReceivingAsync();
@@ -35,7 +39,7 @@ namespace Translator.Core
             //    }
             //} while (_resultIsAcceptable == false);
             //return _recoResult.Text;
-            return (await _audioRecevier.StartVoiceReceivingAsync()).Text;
+            return (await _audioRecevier.StartVoiceReceivingAsync(language)).Text;
         }
     }
 }

@@ -8,20 +8,28 @@ namespace Translator.Core
 {
     public class Language
     {
-        public string Code { get; set; }
+        public string RecognizerCode { get; set; }//http://abundantcode.com/how-to-get-installed-speech-recognizers-from-windows-phone-using-c/
 
-        public string Full { get; set; }
+        public string TranslatorCode { get; set; }//https://msdn.microsoft.com/en-us/library/hh456380.aspx
 
-        public Language(string code, string full)
+        public string FullName { get; set; }
+
+        public int Position { get; set; }
+
+        public Language(string recognizerCode, string translatorCode, string fullName, int position)
         {
-            Code = code;
-            Full = full;
+            RecognizerCode = recognizerCode;
+            TranslatorCode = translatorCode;
+            FullName = fullName;
+            Position = position;
         }
 
         public Language()
         {
-            Code = "default code";
-            Full = "default full";
+            RecognizerCode = "default recognizer code";
+            TranslatorCode = "default translator code";
+            FullName = "default full name";
+            Position = 0;
         }
     }
 }

@@ -103,9 +103,13 @@ namespace Translator.Core
         {
             Languages = new List<Language>
             {
-                new Language("en-us", "English"),
-                new Language("ru-ru", "Russian"),
-                new Language("ge-ge", "German")
+                new Language("en-US", "en", "English", 0),
+                new Language("de-DE", "de", "German", 1),
+                new Language("fr-FR", "fr", "French", 2),
+                new Language("it-IT", "it", "Italian", 3),
+                new Language("ja-JP", "ja", "Japanese", 4),
+                new Language("ru-RU", "ru", "Russian", 5),
+                new Language("es-ES", "es", "Spanish", 6)
             };
             _tokenService = new TokenService();
             _tokenService.AccessTokenComplete += _tokenService_AccessTokenComplete;
