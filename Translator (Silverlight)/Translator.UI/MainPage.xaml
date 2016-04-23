@@ -51,14 +51,14 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="Source language" Margin="12,0,250,0" />
+            <TextBlock Grid.Row="0" Text="source language" Margin="12,0,250,0" />
             <toolkit:ListPicker ItemsSource="{Binding SourceLanguages}"
                 ItemTemplate="{StaticResource ItemTemplate}" FullModeItemTemplate="{StaticResource ItemTemplate}"
-                x:Name="SourceLanguage" Grid.Row="1" Margin="12,0,250,0"/>
-            <TextBlock Grid.Row="0" Text="Target language" Margin="250,0,12,0" />
+                x:Name="SourceLanguage" FullModeHeader="source language" Grid.Row="1" Margin="12,0,250,0"/>
+            <TextBlock Grid.Row="0" Text="target language" Margin="250,0,12,0" />
             <toolkit:ListPicker ItemsSource="{Binding TargetLanguages}"
             	ItemTemplate="{StaticResource ItemTemplate}" FullModeItemTemplate="{StaticResource ItemTemplate}"
-            	x:Name="TargetLanguage" Grid.Row="1" Margin="250,0,12,0"/>
+            	x:Name="TargetLanguage" FullModeHeader="target Language" Grid.Row="1" Margin="250,0,12,0"/>
             <Button Grid.Row="2" Command="{Binding ListenUserSpeechCommand}" 
                 Content="{Binding StartButtonContent}" Click="Button_Click"    />
             <TextBox Grid.Row="3" Name="Input" Height="204" Text="{Binding InputText, Mode=TwoWay}" VerticalAlignment="Bottom"/>

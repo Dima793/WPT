@@ -17,8 +17,6 @@ namespace Translator.UI
 {
     public class MainPageViewModel : INotifyPropertyChanged
     {
-        //private readonly MainPage _mainPage;
-
         private bool _canListen = true;
 
         public string StartButtonContent => "Listen";
@@ -27,15 +25,11 @@ namespace Translator.UI
 
         public bool CanListen => this._canListen;
 
-        public bool CanTranslate => _inputText != String.Empty;
+        //public bool CanTranslate => _inputText != String.Empty;
 
         public Commands.RelayCommand ListenUserSpeechCommand { get; set; }
 
         public Commands.RelayCommand TranslateCommand { get; set; }
-
-        public ObservableCollection<Language> SourceLanguages { get; set; }
-
-        public ObservableCollection<Language> TargetLanguages { get; set; }
 
         public string CurrentSourceLanguage { get; set; }
 
@@ -50,6 +44,10 @@ namespace Translator.UI
         private string _inputText;
 
         private string _outputText;
+
+        private ObservableCollection<Language> _sourceLanguages;
+
+        private ObservableCollection<Language> _targetLanguages;
 
         public string InputText
         {
@@ -81,6 +79,36 @@ namespace Translator.UI
             }
         }
 
+        public ObservableCollection<Language> SourceLanguages
+        {
+            get
+            {
+                return _sourceLanguages;
+            }
+
+            set
+            {
+                if (_sourceLanguages == value) return;
+                _sourceLanguages = value;
+                OnPropertyChanged("SourceLanguages");
+            }
+        }
+
+        public ObservableCollection<Language> TargetLanguages
+        {
+            get
+            {
+                return _targetLanguages;
+            }
+
+            set
+            {
+                if (_targetLanguages == value) return;
+                _targetLanguages = value;
+                OnPropertyChanged("TargetLanguages");
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName)
@@ -101,15 +129,29 @@ namespace Translator.UI
         {
             ChangeCanListen();
             _receivedText = await _audioRecevierManager.GetUserSpeech();
-            //_mainPage.SetInput(_receivedText);
             InputText = _receivedText;
             ChangeCanListen();
         }
 
         public void Translate(object obj)
         {
-            //_mainPage.SetOutput(_translator.Translate(_mainPage.GetInput()));
-            OutputText = _translator.Translate(InputText);
+            _translator.Translate(InputText, "en-us", "ge-ge");//target language code
+        }
+
+        void _translator_TranslationComplete(object sender, TranslationCompleteEventArgs e)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                OutputText = e.ResultText;
+            });
+        }
+
+        void _translator_TranslationFailed(object sender, TranslationFailedEventArgs e)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                MessageBox.Show("Bummer, the translation failed. \n " + e.ErrorDescription);
+            });
         }
 
         public MainPageViewModel()
@@ -118,11 +160,13 @@ namespace Translator.UI
             OutputText = "Output";
             _audioRecevierManager = new AudioReceiverManager();
             _translator = new Core.Translator();
+            _translator.TranslationComplete += _translator_TranslationComplete;
+            _translator.TranslationFailed += _translator_TranslationFailed;
             SourceLanguages = new ObservableCollection<Language>(_translator.Languages);
-            MessageBox.Show(SourceLanguages[0].Full);
+            //MessageBox.Show(SourceLanguages[0].Full);
             TargetLanguages = new ObservableCollection<Language>(_translator.Languages);
             ListenUserSpeechCommand = new Commands.RelayCommand(GetUserSpeech, param => CanListen);
-            TranslateCommand = new Commands.RelayCommand(Translate, param => CanTranslate);
+            TranslateCommand = new Commands.RelayCommand(Translate);//, param => CanTranslate
         }
     }
 }
