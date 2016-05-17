@@ -1,4 +1,6 @@
-﻿using System.Windows.Navigation;
+﻿using System;
+using System.Windows;
+using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 
 namespace Translator.UI
@@ -14,6 +16,11 @@ namespace Translator.UI
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+        }
+
+        private void goToTranslator(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
         }
     }
 }
