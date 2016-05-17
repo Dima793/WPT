@@ -18,7 +18,7 @@ namespace Translator.UI
             base.OnNavigatedTo(e);
         }
 
-        private void goToTranslator(object sender, RoutedEventArgs e)
+        private void GoToTranslator(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
         }

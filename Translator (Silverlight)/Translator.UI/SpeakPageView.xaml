@@ -27,14 +27,23 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="Text to speech" Margin="9,-7,0,0" Style="{StaticResource PhoneTextExtraLargeStyle}"/>
+            <TextBlock Text="TextSpeaker" Margin="9,-7,0,0" Style="{StaticResource PhoneTextExtraLargeStyle}"/>
         </StackPanel>
-
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <TextBox Margin="28,160,28,393" Text="{Binding Message, Mode=TwoWay}"/>
-            <Button x:Name="PronounceButton" Content="Pronounce" Width="270" Height="90" Margin="93,292,93,251" Command="{Binding PronounceCommand}"/>
-            <Button x:Name="GoToTranslatorButton" Content="Go to Translator" Width="220" Height="80" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="goToTranslator"/>
+            <TextBlock Text="Language:" Margin="120,50,200,550"/>
+            <ListBox ItemsSource="{Binding Languages}" Height="80" Width ="200" Margin="226,25,30,568" SelectedItem="{Binding CurrentLanguage, Mode=TwoWay}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <TextBlock Text="{Binding Name}"/> 
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <TextBox Margin="28,120,28,400" Text="{Binding Message, Mode=TwoWay}"/>
+            <Button x:Name="PronounceButton" Content="Pronounce" Margin="60,275,60,300" Command="{Binding PronounceCommand}"/>
+            <Button x:Name="GoToTranslatorButton" Content="Go to Translator" Width="220" Height="80" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="GoToTranslator"/>
         </Grid>
     </Grid>
 
