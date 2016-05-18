@@ -59,8 +59,10 @@ namespace Translator.UI
 
         // Код для выполнения при запуске приложения (например, из меню "Пуск")
         // Этот код не будет выполняться при повторной активации приложения
-        private void Application_Launching(object sender, LaunchingEventArgs e)
+        private async void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            await HistoryPageViewModel.ReadJsonAsync();
+            HistoryPageViewModel.ConvertJsonToHistoryEntries();
         }
 
         // Код для выполнения при активации приложения (переводится в основной режим)

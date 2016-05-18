@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Windows;
 using System.Windows.Input;
-using System.Windows.Navigation;
 using Translator.Core;
 
 namespace Translator.UI
 {
     public class SpeakPageViewModel : INotifyPropertyChanged
     {
-        private TextSpeaker _speaker;
-
+        private readonly TextSpeaker _speaker;
         public List<SpeakLanguage> Languages { get; set; }
-
         private SpeakLanguage _currentLanguage;
 
         public SpeakLanguage CurrentLanguage
@@ -22,12 +17,10 @@ namespace Translator.UI
 
             set
             {
-                if (_currentLanguage != value)
-                {
-                    _currentLanguage = value;
-                    _speaker.SetLanguage(value.Name);
-                    OnPropertyChanged("CurrentLanguage");
-                }
+                if (_currentLanguage == value) return;
+                _currentLanguage = value;
+                _speaker.SetLanguage(value.Name);
+                OnPropertyChanged("CurrentLanguage");
             }
         }
 
@@ -39,25 +32,28 @@ namespace Translator.UI
 
             set
             {
-                if (_message != value)
-                {
-                    _message = value;
-                    OnPropertyChanged("Message");
-                }
+                if (_message == value) return;
+                _message = value;
+                OnPropertyChanged("Message");
             }
         }
 
         public ICommand PronounceCommand { get; set; }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        private void Pronounce()
+        {
+            _speaker.Speak(_message);
+            HistoryPageViewModel.AddEntry(new HistoryEntry(CurrentLanguage.Name, _message));
+        }
+
+        public ICommand GoToHistoryCommand { get; set; }
+        public ICommand GoToTranslatorCommand { get; set; }
 
         public SpeakPageViewModel()
         {
@@ -65,7 +61,9 @@ namespace Translator.UI
             _speaker = new TextSpeaker();
             Languages = _speaker.Languages;
             CurrentLanguage = Languages[0];
-            PronounceCommand = new RelayCommand(() => _speaker.Speak(_message));
+            PronounceCommand = new RelayCommand(Pronounce);
+            GoToHistoryCommand = Navigator.GoToCommand("/HistoryPage.xaml");
+            GoToTranslatorCommand = Navigator.GoToCommand("/MainPage.xaml");
         }
     }
 }

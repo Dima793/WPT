@@ -6,9 +6,7 @@ namespace Translator.UI
     public class RelayCommand : ICommand
     {
         private readonly Action _execute;
-
         private readonly Func<bool> _canExecute;
-
         public event EventHandler CanExecuteChanged;
 
         public RelayCommand(Action execute) : this(execute, null)
@@ -23,7 +21,7 @@ namespace Translator.UI
 
         public bool CanExecute(object parameter)
         {
-            return _canExecute == null ? true : _canExecute();
+            return _canExecute == null || _canExecute();
         }
 
         public void Execute(object parameter)
@@ -34,10 +32,7 @@ namespace Translator.UI
         public void RaiseCanExecuteChanged()
         {
             var handler = CanExecuteChanged;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            handler?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -20,15 +20,18 @@
     
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <Button Grid.Row="0" Command="{Binding StartListenUserSpeech}" 
-        Content="{Binding StartButtonContent}" Margin="140,100,140,510" Grid.RowSpan="2"    />
+        Content="{Binding StartButtonContent}" Height="150" Width="250"/>
 
         <Button Grid.Row="1" Command="{Binding StopListenUserSpeech}" 
-        Content="{Binding StopButtonContent}" Margin="140,440,140,170"    />
+        Content="{Binding StopButtonContent}" Height="150" Width="250"/>
 
+        <Button Grid.Row="2" Content="Go to SpeakPage" Width="225" Height="80" HorizontalAlignment="Right" VerticalAlignment="Bottom" Command="{Binding GoToSpeakerCommand}"/>
+        <Button Grid.Row="2" Content="Go to History" Width="220" Height="80" HorizontalAlignment="Left" VerticalAlignment="Bottom" Command="{Binding GoToHistoryCommand}"/>
     </Grid>
 </phone:PhoneApplicationPage>

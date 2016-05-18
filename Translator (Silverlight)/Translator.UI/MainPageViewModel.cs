@@ -50,11 +50,16 @@ namespace Translator.UI
             _audioRecevierManager.StopGetUserSpeech();
         }
 
+        public ICommand GoToHistoryCommand { get; set; }
+        public ICommand GoToSpeakerCommand { get; set; }
+
         public MainPageViewModel()
         {
             StartListenUserSpeech = new Commands.ListenUserSpeechCommand(StartGetUserSpeech, param => this.IsNotListening);
             StopListenUserSpeech = new Commands.ListenUserSpeechCommand(StopGetUserSpeech, param => this.IsListening);
             _audioRecevierManager = new AudioReceiverManager();
+            GoToHistoryCommand = Navigator.GoToCommand("/HistoryPage.xaml");
+            GoToSpeakerCommand = Navigator.GoToCommand("/SpeakPage.xaml");
         }
     }
 }
