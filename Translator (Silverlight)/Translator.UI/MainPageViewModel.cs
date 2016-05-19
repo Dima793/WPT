@@ -1,65 +1,236 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Translator.Core;
 using Windows.UI.Popups;
 using Windows.Phone;
+using Windows.Phone.Speech.Recognition;
+using Microsoft.Phone.Controls;
 
 namespace Translator.UI
 {
-    public class MainPageViewModel
+    public class MainPageViewModel : INotifyPropertyChanged
     {
-        private bool _isListening = false;
+        private bool _canListen = true;
 
-        public string StartButtonContent => " Start listen\nuser speech";
+        public string StartButtonContent => "Listen";
 
-        public string StopButtonContent => " Stop listen\nuser speech";
+        public string TranslateButtonContent => "Translate";
 
-        public bool IsListening => this._isListening;
+        public bool CanListen => this._canListen;
 
-        public bool IsNotListening => !this._isListening;
+        //public bool CanTranslate => _inputText != String.Empty;
 
-        public Commands.ListenUserSpeechCommand StartListenUserSpeech { get; set; }
+        public ICommand GoToHistoryCommand { get; set; }
 
-        public Commands.ListenUserSpeechCommand StopListenUserSpeech { get; set; }
+        public ICommand GoToSpeakerCommand { get; set; }
+
+        public Commands.RelayCommand ListenUserSpeechCommand { get; set; }
+
+        public Commands.RelayCommand TranslateCommand { get; set; }
+
+        public Core.Language LastSourceLanguage { get; set; }
+
+        public Core.Language LastTargetLanguage { get; set; }
 
         private readonly AudioReceiverManager _audioRecevierManager;
 
-        //private string _receivedText;
+        private readonly Core.Translator _translator;
 
-        private void ChangeIsListening()
+        private string _receivedText;
+
+        private string _inputText;
+
+        private string _outputText;
+
+        private ObservableCollection<Language> _sourceLanguages;
+
+        private ObservableCollection<Language> _targetLanguages;
+
+        private Core.Language _currentSourceLanguage;
+
+        private Core.Language _currentTargetLanguage;
+
+        public string InputText
         {
-            _isListening = !_isListening;
-            StartListenUserSpeech.RaiseCanExecuteChanged();
-            StopListenUserSpeech.RaiseCanExecuteChanged();
+            get
+            {
+                return _inputText;
+            }
+
+            set
+            {
+                if (_inputText == value) return;
+                _inputText = value;
+                OnPropertyChanged("InputText");
+            }
         }
 
-        public async void StartGetUserSpeech(object obj)
+        public string OutputText
         {
-            ChangeIsListening();
-            MessageBox.Show(await _audioRecevierManager.GetUserSpeech());
+            get
+            {
+                return _outputText;
+            }
+
+            set
+            {
+                if (_outputText == value) return;
+                _outputText = value;
+                OnPropertyChanged("OutputText");
+            }
         }
 
-        public void StopGetUserSpeech(object obj)
+        public ObservableCollection<Language> SourceLanguages
         {
-            ChangeIsListening();
-            _audioRecevierManager.StopGetUserSpeech();
+            get
+            {
+                return _sourceLanguages;
+            }
+
+            set
+            {
+                if (_sourceLanguages == value) return;
+                _sourceLanguages = value;
+                OnPropertyChanged("SourceLanguages");
+            }
         }
 
-        public ICommand GoToHistoryCommand { get; set; }
-        public ICommand GoToSpeakerCommand { get; set; }
+        public ObservableCollection<Language> TargetLanguages
+        {
+            get
+            {
+                return _targetLanguages;
+            }
+
+            set
+            {
+                if (_targetLanguages == value) return;
+                _targetLanguages = value;
+                OnPropertyChanged("TargetLanguages");
+            }
+        }
+
+        public Core.Language CurrentSourceLanguage
+        {
+            get
+            {
+                return _currentSourceLanguage;
+            }
+            set
+            {
+                if (_currentSourceLanguage == value) return;
+                _currentSourceLanguage = value;
+                if (LastSourceLanguage != null)
+                {
+                    _targetLanguages.Insert(LastSourceLanguage.Position, LastSourceLanguage);
+                }
+                _targetLanguages.RemoveAt(_currentSourceLanguage.Position);
+                LastSourceLanguage = _currentSourceLanguage;
+            }
+        }
+
+        public Core.Language CurrentTargetLanguage
+        {
+            get
+            {
+                return _currentTargetLanguage;
+            }
+            set
+            {
+                if (_currentTargetLanguage == value) return;
+                _currentTargetLanguage = value;
+                //if (LastTargetLanguage != null)
+                //{
+                //    _sourceLanguages.Insert(LastTargetLanguage.Position, LastTargetLanguage);
+                //}
+                //_sourceLanguages.RemoveAt(_currentTargetLanguage.Position);
+                LastTargetLanguage = _currentTargetLanguage;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private void ChangeCanListen()
+        {
+            _canListen = !_canListen;
+            ListenUserSpeechCommand.RaiseCanExecuteChanged();
+        }
+
+        public async void GetUserSpeech(object obj)
+        {
+            ChangeCanListen();
+            _receivedText = await _audioRecevierManager.GetUserSpeech(_currentSourceLanguage.RecognizerCode);
+            InputText = _receivedText;
+            ChangeCanListen();
+        }
+
+        public void Translate(object obj)
+        {
+            _translator.Translate(InputText, "en", "ge");//target language code
+        }
+
+        void _translator_TranslationComplete(object sender, TranslationCompleteEventArgs e)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                OutputText = e.ResultText;
+            });
+        }
+
+        void _translator_TranslationFailed(object sender, TranslationFailedEventArgs e)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                MessageBox.Show("Bummer, the translation failed. \n " + e.ErrorDescription);
+            });
+        }
 
         public MainPageViewModel()
         {
-            StartListenUserSpeech = new Commands.ListenUserSpeechCommand(StartGetUserSpeech, param => this.IsNotListening);
-            StopListenUserSpeech = new Commands.ListenUserSpeechCommand(StopGetUserSpeech, param => this.IsListening);
+            InputText = "Input\n";
+            OutputText = "Output";
             _audioRecevierManager = new AudioReceiverManager();
+            _translator = new Core.Translator();
+            _translator.TranslationComplete += _translator_TranslationComplete;
+            _translator.TranslationFailed += _translator_TranslationFailed;
+            SourceLanguages = new ObservableCollection<Language>(_translator.Languages);
+            TargetLanguages = new ObservableCollection<Language>(_translator.Languages);
+            LastSourceLanguage = null;
+            LastTargetLanguage = null;
+            CurrentSourceLanguage = SourceLanguages[0];
+            CurrentTargetLanguage = TargetLanguages[0];
+            ListenUserSpeechCommand = new Commands.RelayCommand(GetUserSpeech, param => CanListen);
+            TranslateCommand = new Commands.RelayCommand(Translate);//, param => CanTranslate
             GoToHistoryCommand = Navigator.GoToCommand("/HistoryPage.xaml");
             GoToSpeakerCommand = Navigator.GoToCommand("/SpeakPage.xaml");
+
+            int i = 0;
+            var Lang = (from m in InstalledSpeechRecognizers.All select m).ToList();
+            foreach (var item in Lang)
+            {
+                InputText += item.Language + " ";
+                if (++i == 5)
+                {
+                    InputText += "\n";
+                    i = 0;
+                }
+            }
         }
     }
 }

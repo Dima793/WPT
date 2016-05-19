@@ -22,6 +22,8 @@ namespace Translator.UI
             //BuildLocalizedApplicationBar();
         }
 
+        private void Button_Click(object sender, RoutedEventArgs e) { }
+
         // Пример кода для сборки локализованной панели ApplicationBar
         //private void BuildLocalizedApplicationBar()
         //{

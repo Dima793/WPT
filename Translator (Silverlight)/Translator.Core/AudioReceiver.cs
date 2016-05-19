@@ -12,33 +12,33 @@ namespace Translator.Core
 {
     class AudioReceiver
     {
+        private SpeechRecognizerUI _reco;
 
-        private bool _isListening = false;
+        private SpeechRecognitionUIResult _recoResult;
 
-        //private SpeechRecognizer _reco = new SpeechRecognizer();
-
-        //private SpeechRecognitionResult _recoResult;
-
-        public void StopVoiceReceiving()
+        private void ConfigureRecognizer(string language)
         {
-            _isListening = false;
-            MessageBox.Show("Stopped");
-            //???
+            IEnumerable<SpeechRecognizerInformation> thatLanguageRecognizers = from recognizerInfo in InstalledSpeechRecognizers.All
+                                                                               where recognizerInfo.Language == language
+                                                                               select recognizerInfo;
+            _reco.Recognizer.SetRecognizer(thatLanguageRecognizers.ElementAt(0));
+            _reco.Recognizer.Settings.InitialSilenceTimeout = TimeSpan.FromSeconds(6.0);
+            _reco.Recognizer.Settings.BabbleTimeout = TimeSpan.FromSeconds(4.0);
+            _reco.Recognizer.Settings.EndSilenceTimeout = TimeSpan.FromSeconds(1.2);
         }
 
-        public async Task<string> StartVoiceReceivingAsync()
+        public async Task<SpeechRecognitionResult> StartVoiceReceivingAsync(string language)
         {
-            MessageBox.Show("Started");
-            _isListening = true;
-            //_recoResult = await _reco.RecognizeAsync();/*
-            await Task.Factory.StartNew(() =>// just something to await while _reco.RecognizeAsync() is not able to be used
-            {
-                while (_isListening)
-                {
-                }
-            });
-            //return _recoResult.Text;
-            return "result in text";
+            ConfigureRecognizer(language);
+            _recoResult = await _reco.RecognizeWithUIAsync();
+            return _recoResult.RecognitionResult;
+        }
+
+        public AudioReceiver()
+        {
+            _reco = new SpeechRecognizerUI();
+            _reco.Settings.ReadoutEnabled = false;
+            _reco.Settings.ShowConfirmation = false;
         }
     }
 }

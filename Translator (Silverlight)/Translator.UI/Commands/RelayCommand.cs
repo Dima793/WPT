@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace Translator.UI.Commands
 {
-    public class ListenUserSpeechCommand : ICommand
+    public class RelayCommand : ICommand
     {
         private readonly Action<object> _execute;
 
@@ -31,10 +31,16 @@ namespace Translator.UI.Commands
 
         public event EventHandler CanExecuteChanged;
 
-        public ListenUserSpeechCommand(Action<object> execute, Predicate<object> canExecute)
+        public RelayCommand(Action<object> execute, Predicate<object> canExecute)
         {
             this._execute = execute;
             this._canExecute = canExecute;
+        }
+
+        public RelayCommand(Action<object> execute)
+        {
+            this._execute = execute;
+            this._canExecute = param => true;
         }
     }
 }
