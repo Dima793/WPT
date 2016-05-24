@@ -8,10 +8,10 @@ namespace Translator.UI
     public class SpeakPageViewModel : INotifyPropertyChanged
     {
         private readonly TextSpeaker _speaker;
-        public List<SpeakLanguage> Languages { get; set; }
-        private SpeakLanguage _currentLanguage;
+        public List<Language> Languages { get; set; }
+        private Language _currentLanguage;
 
-        public SpeakLanguage CurrentLanguage
+        public Language CurrentLanguage
         {
             get { return _currentLanguage; }
 
@@ -19,7 +19,7 @@ namespace Translator.UI
             {
                 if (_currentLanguage == value) return;
                 _currentLanguage = value;
-                _speaker.SetLanguage(value.Name);
+                _speaker.SetLanguage(value.FullName);
                 OnPropertyChanged("CurrentLanguage");
             }
         }
@@ -49,7 +49,7 @@ namespace Translator.UI
         private void Pronounce()
         {
             _speaker.Speak(_message);
-            HistoryPageViewModel.AddEntry(new HistoryEntry(CurrentLanguage.Name, _message));
+            HistoryPageViewModel.AddEntry(new HistoryEntry(CurrentLanguage.FullName, _message));
         }
 
         public ICommand GoToHistoryCommand { get; set; }
