@@ -20,6 +20,7 @@
         <ui:MainPageViewModel/>
     </phone:PhoneApplicationPage.DataContext>
 
+
     <phone:PhoneApplicationPage.Resources>
         <DataTemplate x:Key="ItemTemplate">
             <TextBlock Text="{Binding FullName}"/>
@@ -40,7 +41,7 @@
             <!--<Grid.DataContext>
                 <ui:MainPageViewModel/>
             </Grid.DataContext>-->
-            
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="29"/>
                 <RowDefinition Height="Auto"/>
@@ -48,22 +49,25 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="84"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" Text="source language" Margin="12,0,250,0" />
-            <toolkit:ListPicker ItemsSource="{Binding SourceLanguages}" SelectedItem="{Binding CurrentSourceLanguage, Mode=TwoWay}"
+            <toolkit:ListPicker ItemsSource="{Binding Languages}" SelectedItem="{Binding CurrentSourceLanguage, Mode=TwoWay}"
                 ItemTemplate="{StaticResource ItemTemplate}" FullModeItemTemplate="{StaticResource ItemTemplate}"
                 x:Name="SourceLanguage" FullModeHeader="source language" Grid.Row="1" Margin="12,0,250,0"/>
             <TextBlock Grid.Row="0" Text="target language" Margin="250,0,12,0" />
-            <toolkit:ListPicker ItemsSource="{Binding TargetLanguages}" SelectedItem="{Binding CurrentTargetLanguage, Mode=TwoWay}"
+            <toolkit:ListPicker ItemsSource="{Binding Languages}" SelectedItem="{Binding CurrentTargetLanguage, Mode=TwoWay}"
             	ItemTemplate="{StaticResource ItemTemplate}" FullModeItemTemplate="{StaticResource ItemTemplate}"
             	x:Name="TargetLanguage" FullModeHeader="target Language" Grid.Row="1" Margin="250,0,12,0"/>
             <Button Grid.Row="2" Command="{Binding ListenUserSpeechCommand}" 
                 Content="{Binding StartButtonContent}" Click="Button_Click"    />
-            <TextBox Grid.Row="3" Name="Input" Height="204" Text="{Binding InputText, Mode=TwoWay}" VerticalAlignment="Bottom"/>
+            <TextBox Grid.Row="3" Name="Input" Height="175" Text="{Binding SourceText, Mode=TwoWay}" VerticalAlignment="Bottom"/>
             <Button Grid.Row="4" Command="{Binding TranslateCommand}" 
                 Content="{Binding TranslateButtonContent}" Click="Button_Click"    />
-            <TextBox Grid.Row="5" Name="Output" Height="204" Text="{Binding OutputText, Mode=TwoWay}" VerticalAlignment="Bottom"/>
+            <TextBox Grid.Row="5" Name="Output" Height="175" Text="{Binding FinalText, Mode=TwoWay}" VerticalAlignment="Bottom"/>
+            <Button Grid.Row="6" Content="Go to SpeakPage" Width="225" Height="80" HorizontalAlignment="Right" VerticalAlignment="Bottom" Command="{Binding GoToSpeakerCommand}"/>
+            <Button Grid.Row="6" Content="Go to History" Width="220" Height="80" HorizontalAlignment="Left" VerticalAlignment="Bottom" Command="{Binding GoToHistoryCommand}"/>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

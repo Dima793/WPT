@@ -1,0 +1,52 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="Translator.UI.SpeakPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:Translator.UI"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d"
+    shell:SystemTray.IsVisible="True">
+
+    <phone:PhoneApplicationPage.DataContext>
+        <local:SpeakPageViewModel />
+    </phone:PhoneApplicationPage.DataContext>
+
+    <phone:PhoneApplicationPage.Resources>
+        <DataTemplate x:Key="LanguageOptionTemplate">
+            <TextBlock Text="{Binding FullName}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        </DataTemplate>
+    </phone:PhoneApplicationPage.Resources>
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock Text="TextSpeaker" Margin="9,-7,0,0" Style="{StaticResource PhoneTextExtraLargeStyle}"/>
+        </StackPanel>
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <TextBlock Text="Language:" Margin="120,70,200,550"/>
+            <toolkit:ListPicker ItemsSource="{Binding Languages}" SelectedItem="{Binding CurrentLanguage, Mode=TwoWay}"
+                ItemTemplate="{StaticResource LanguageOptionTemplate}" FullModeItemTemplate="{StaticResource LanguageOptionTemplate}" 
+                                FullModeHeader="Text language" Margin="230,55,100,560"/>
+            <TextBox Margin="28,120,28,400" Text="{Binding Message, Mode=TwoWay}"/>
+            <Button x:Name="PronounceButton" Content="Pronounce" Margin="60,275,60,300" Command="{Binding PronounceCommand}"/>
+            <Button x:Name="GoToTranslatorButton" Content="Go to Translator" Width="220" Height="80" HorizontalAlignment="Right" VerticalAlignment="Bottom" Command="{Binding GoToTranslatorCommand}"/>
+            <Button x:Name="GoToHistoryButton" Content="Go to History" Width="220" Height="80" HorizontalAlignment="Left" VerticalAlignment="Bottom" Command="{Binding GoToHistoryCommand}"/>
+        </Grid>
+    </Grid>
+
+</phone:PhoneApplicationPage>

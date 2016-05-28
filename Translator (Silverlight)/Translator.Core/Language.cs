@@ -14,14 +14,14 @@ namespace Translator.Core
 
         public string FullName { get; set; }
 
-        public int Position { get; set; }
+        public bool DefaultGrammarSupport { get; set; }
 
-        public Language(string recognizerCode, string translatorCode, string fullName, int position)
+        public Language(string recognizerCode, string translatorCode, string fullName, bool defaultGrammarSupport)
         {
             RecognizerCode = recognizerCode;
             TranslatorCode = translatorCode;
             FullName = fullName;
-            Position = position;
+            DefaultGrammarSupport = defaultGrammarSupport;
         }
 
         public Language()
@@ -29,7 +29,7 @@ namespace Translator.Core
             RecognizerCode = "default recognizer code";
             TranslatorCode = "default translator code";
             FullName = "default full name";
-            Position = 0;
+            DefaultGrammarSupport = false;
         }
     }
 }

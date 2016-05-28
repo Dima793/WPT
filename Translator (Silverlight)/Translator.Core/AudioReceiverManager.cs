@@ -10,19 +10,14 @@ namespace Translator.Core
 {
     public class AudioReceiverManager
     {
-        private readonly AudioReceiver _audioRecevier = new AudioReceiver();
+        private readonly AudioReceiver _audioRecevier;
 
         //private SpeechRecognitionResult _recoResult;
 
         //private bool _resultIsAcceptable;
 
-        public async Task<string> GetUserSpeech(string language)
+        public async Task GetUserSpeech()
         {
-            if ((language == "ru-RU") || (language == "ja-JP"))
-            {
-                MessageBox.Show("Sorry, no unicode support yet");
-                return String.Empty;
-            }
             //do
             //{
             //    _recoResult = await _audioRecevier.StartVoiceReceivingAsync();
@@ -39,7 +34,30 @@ namespace Translator.Core
             //    }
             //} while (_resultIsAcceptable == false);
             //return _recoResult.Text;
-            return (await _audioRecevier.StartVoiceReceivingAsync(language)).Text;
+            int number = StaticData.Languages.IndexOf(StaticData.SourceLanguage);
+            await _audioRecevier.ReceiveVoiceAsync(number);
+        }
+
+        public void ShowPotentiallySupportedLanguages()
+        {
+            int i = 0;
+            string message = "Potentially Supported Languages:\n\n";
+            var Lang = (from m in InstalledSpeechRecognizers.All select m).ToList();
+            foreach (var item in Lang)
+            {
+                message += item.Language + "\t";
+                if (++i == 5)
+                {
+                    message += "\n";
+                    i = 0;
+                }
+            }
+            MessageBox.Show(message.Remove(message.Length - 1));
+        }
+
+public AudioReceiverManager()
+        {
+            _audioRecevier = new AudioReceiver();
         }
     }
 }
