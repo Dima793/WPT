@@ -66,8 +66,7 @@
             <Button Grid.Row="4" Command="{Binding TranslateCommand}" 
                 Content="{Binding TranslateButtonContent}" Click="Button_Click"    />
             <TextBox Grid.Row="5" Name="Output" Height="175" Text="{Binding OutputText, Mode=TwoWay}" VerticalAlignment="Bottom"/>
-            <Button Grid.Row="6" Content="Go to SpeakPage" Width="225" Height="80" HorizontalAlignment="Right" VerticalAlignment="Bottom" Command="{Binding GoToSpeakerCommand}"/>
-            <Button Grid.Row="6" Content="Go to History" Width="220" Height="80" HorizontalAlignment="Left" VerticalAlignment="Bottom" Command="{Binding GoToHistoryCommand}"/>
+            <Button Grid.Row="6" Content="Go to SpeakPage" Width="225" Height="80" HorizontalAlignment="Center" VerticalAlignment="Bottom" Command="{Binding GoToSpeakerCommand}"/>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 using Translator.Core;
@@ -8,7 +9,11 @@ namespace Translator.UI
     public class SpeakPageViewModel : INotifyPropertyChanged
     {
         private readonly TextSpeaker _speaker;
+
         public List<Language> Languages { get; set; }
+
+        public ObservableCollection<HistoryEntry> AutoCompleteOptions => HistoryManager.Entries;
+
         private Language _currentLanguage;
 
         public Language CurrentLanguage
@@ -49,7 +54,7 @@ namespace Translator.UI
         private void Pronounce()
         {
             _speaker.Speak(_message);
-            HistoryPageViewModel.AddEntry(new HistoryEntry(CurrentLanguage.FullName, _message));
+            HistoryManager.AddEntry(new HistoryEntry(CurrentLanguage.FullName, _message));
         }
 
         public ICommand GoToHistoryCommand { get; set; }
@@ -57,10 +62,11 @@ namespace Translator.UI
 
         public SpeakPageViewModel()
         {
-            Message = "Write something...";
+            Message = "Having fun";
             _speaker = new TextSpeaker();
             Languages = _speaker.Languages;
             CurrentLanguage = Languages[0];
+
             PronounceCommand = new RelayCommand(Pronounce);
             GoToHistoryCommand = Navigator.GoToCommand("/HistoryPage.xaml");
             GoToTranslatorCommand = Navigator.GoToCommand("/MainPage.xaml");

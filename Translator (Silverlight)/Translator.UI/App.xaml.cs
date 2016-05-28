@@ -6,99 +6,60 @@ using System.Windows.Markup;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using Translator.Core;
 using Translator.UI.Resources;
 
 namespace Translator.UI
 {
-    public partial class App : Application
+    public partial class App
     {
-        /// <summary>
-        /// Обеспечивает быстрый доступ к корневому кадру приложения телефона.
-        /// </summary>
-        /// <returns>Корневой кадр приложения телефона.</returns>
         public static PhoneApplicationFrame RootFrame { get; private set; }
 
-        /// <summary>
-        /// Конструктор объекта приложения.
-        /// </summary>
         public App()
         {
-            // Глобальный обработчик неперехваченных исключений.
             UnhandledException += Application_UnhandledException;
 
-            // Стандартная инициализация XAML
             InitializeComponent();
-
-            // Инициализация телефона
             InitializePhoneApplication();
-
-            // Инициализация отображения языка
             InitializeLanguage();
 
-            // Отображение сведений о профиле графики во время отладки.
             if (Debugger.IsAttached)
             {
-                // Отображение текущих счетчиков частоты смены кадров.
-                Application.Current.Host.Settings.EnableFrameRateCounter = true;
-
-                // Отображение областей приложения, перерисовываемых в каждом кадре.
-                //Application.Current.Host.Settings.EnableRedrawRegions = true;
-
-                // Включение режима визуализации анализа нерабочего кода,
-                // для отображения областей страницы, переданных в GPU, с цветным наложением.
-                //Application.Current.Host.Settings.EnableCacheVisualization = true;
-
-                // Предотвратить выключение экрана в режиме отладчика путем отключения
-                // определения состояния простоя приложения.
-                // Внимание! Используйте только в режиме отладки. Приложение, в котором отключено обнаружение бездействия пользователя, будет продолжать работать
-                // и потреблять энергию батареи, когда телефон не будет использоваться.
+                Current.Host.Settings.EnableFrameRateCounter = true;
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
         }
 
-        // Код для выполнения при запуске приложения (например, из меню "Пуск")
-        // Этот код не будет выполняться при повторной активации приложения
-        private async void Application_Launching(object sender, LaunchingEventArgs e)
+        private void Application_Launching(object sender, LaunchingEventArgs e)
         {
-            await HistoryPageViewModel.ReadJsonAsync();
-            HistoryPageViewModel.ConvertJsonToHistoryEntries();
+            HistoryManager.ReadHistory();
         }
 
-        // Код для выполнения при активации приложения (переводится в основной режим)
-        // Этот код не будет выполняться при первом запуске приложения
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
         }
 
-        // Код для выполнения при деактивации приложения (отправляется в фоновый режим)
-        // Этот код не будет выполняться при закрытии приложения
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
         }
 
-        // Код для выполнения при закрытии приложения (например, при нажатии пользователем кнопки "Назад")
-        // Этот код не будет выполняться при деактивации приложения
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
         }
 
-        // Код для выполнения в случае ошибки навигации
-        private void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
+        private static void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
             if (Debugger.IsAttached)
             {
-                // Ошибка навигации; перейти в отладчик
                 Debugger.Break();
             }
         }
 
-        // Код для выполнения на необработанных исключениях
-        private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
+        private static void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
             if (Debugger.IsAttached)
             {
-                // Произошло необработанное исключение; перейти в отладчик
                 Debugger.Break();
             }
         }
@@ -160,64 +121,26 @@ namespace Translator.UI
             // Очистка всего стека страницы для согласованности пользовательского интерфейса
             while (RootFrame.RemoveBackEntry() != null)
             {
-                ; // ничего не делать
+                // do nothing
             }
         }
 
         #endregion
 
-        // Инициализация шрифта приложения и направления текста, как определено в локализованных строках ресурсов.
-        //
-        // Чтобы убедиться, что шрифт приложения соответствует поддерживаемым языкам, а
-        // FlowDirection для каждого из этих языков соответствует традиционному направлению, ResourceLanguage
-        // и ResourceFlowDirection необходимо инициализировать в каждом RESX-файле, чтобы эти значения совпадали с
-        // культурой файла. Пример:
-        //
-        // AppResources.es-ES.resx
-        //    Значение ResourceLanguage должно равняться "es-ES"
-        //    Значение ResourceFlowDirection должно равняться "LeftToRight"
-        //
-        // AppResources.ar-SA.resx
-        //     Значение ResourceLanguage должно равняться "ar-SA"
-        //     Значение ResourceFlowDirection должно равняться "RightToLeft"
-        //
-        // Дополнительные сведения о локализации приложений Windows Phone см. на странице http://go.microsoft.com/fwlink/?LinkId=262072.
-        //
-        private void InitializeLanguage()
+        private static void InitializeLanguage()
         {
             try
             {
-                // Задать шрифт в соответствии с отображаемым языком, определенным
-                // строкой ресурса ResourceLanguage для каждого поддерживаемого языка.
-                //
-                // Откат к шрифту нейтрального языка, если отображаемый
-                // язык телефона не поддерживается.
-                //
-                // Если возникла ошибка компилятора, ResourceLanguage отсутствует в
-                // файл ресурсов.
                 RootFrame.Language = XmlLanguage.GetLanguage(AppResources.ResourceLanguage);
-
-                // Установка FlowDirection для всех элементов в корневом кадре на основании
-                // строки ресурса ResourceFlowDirection для каждого
-                // поддерживаемого языка.
-                //
-                // Если возникла ошибка компилятора, ResourceFlowDirection отсутствует в
-                // файл ресурсов.
-                FlowDirection flow = (FlowDirection)Enum.Parse(typeof(FlowDirection), AppResources.ResourceFlowDirection);
+                var flow = (FlowDirection)Enum.Parse(typeof(FlowDirection), AppResources.ResourceFlowDirection);
                 RootFrame.FlowDirection = flow;
             }
             catch
             {
-                // Если здесь перехвачено исключение, вероятнее всего это означает, что
-                // для ResourceLangauge неправильно задан код поддерживаемого языка
-                // или для ResourceFlowDirection задано значение, отличное от LeftToRight
-                // или RightToLeft.
-
                 if (Debugger.IsAttached)
                 {
                     Debugger.Break();
                 }
-
                 throw;
             }
         }

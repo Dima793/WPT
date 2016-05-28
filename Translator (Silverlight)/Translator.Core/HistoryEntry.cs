@@ -6,7 +6,7 @@
         public string Text { set; get; }
 
         public HistoryEntry()
-        {           
+        {          
         }
 
         public HistoryEntry(string language, string text)

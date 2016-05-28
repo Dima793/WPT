@@ -28,8 +28,6 @@ namespace Translator.UI
 
         //public bool CanTranslate => _inputText != String.Empty;
 
-        public ICommand GoToHistoryCommand { get; set; }
-
         public ICommand GoToSpeakerCommand { get; set; }
 
         public Commands.RelayCommand ListenUserSpeechCommand { get; set; }
@@ -217,7 +215,7 @@ namespace Translator.UI
             CurrentTargetLanguage = TargetLanguages[0];
             ListenUserSpeechCommand = new Commands.RelayCommand(GetUserSpeech, param => CanListen);
             TranslateCommand = new Commands.RelayCommand(Translate);//, param => CanTranslate
-            GoToHistoryCommand = Navigator.GoToCommand("/HistoryPage.xaml");
+
             GoToSpeakerCommand = Navigator.GoToCommand("/SpeakPage.xaml");
 
             int i = 0;
