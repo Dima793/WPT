@@ -92,14 +92,61 @@
   <ItemGroup>
     <Compile Include="AudioReceiver.cs" />
     <Compile Include="AudioReceiverManager.cs" />
-    <Compile Include="AudioToTextConv.cs" />
-    <Compile Include="HistoryManager.cs" />
     <Compile Include="Language.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\BingTranslatorServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="StaticData.cs" />
     <Compile Include="TextSpeaker.cs" />
     <Compile Include="HistoryEntry.cs" />
-    <Compile Include="Token.cs" />
+    <Compile Include="WebTranslator.cs" />
     <Compile Include="Translator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Grammars\Russian.grxml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BingTranslatorServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\BingTranslatorServiceReference\configuration.svcinfo" />
+    <None Include="Service References\BingTranslatorServiceReference\configuration91.svcinfo" />
+    <Content Include="ServiceReferences.ClientConfig" />
+    <None Include="Service References\BingTranslatorServiceReference\Translator.Core.BingTranslatorServiceReference.GetTranslationsResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\BingTranslatorServiceReference\Translator.Core.BingTranslatorServiceReference.TranslateArray2Response.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\BingTranslatorServiceReference\Translator.Core.BingTranslatorServiceReference.TranslateArrayResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\BingTranslatorServiceReference\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\BingTranslatorServiceReference\soap.wsdl" />
+    <None Include="Service References\BingTranslatorServiceReference\soap.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BingTranslatorServiceReference\soap1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BingTranslatorServiceReference\soap2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BingTranslatorServiceReference\soap3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BingTranslatorServiceReference\SoapService.wsdl" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />

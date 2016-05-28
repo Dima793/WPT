@@ -40,7 +40,7 @@ namespace Translator.UI.Commands
         public RelayCommand(Action<object> execute)
         {
             this._execute = execute;
-            this._canExecute = param => true;
+            this._canExecute = o => true;
         }
     }
 }

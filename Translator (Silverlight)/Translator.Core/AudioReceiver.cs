@@ -1,44 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
-using Windows;
-using Windows.Foundation;
 using Windows.Phone.Speech.Recognition;
 
 namespace Translator.Core
 {
     class AudioReceiver
     {
-        private SpeechRecognizerUI _reco;
+        private List<SpeechRecognizerUI> _recognizersUI;
 
         private SpeechRecognitionUIResult _recoResult;
 
-        private void ConfigureRecognizer(string language)
+        private async Task PreloadGrammarsAsync(int number)
         {
-            IEnumerable<SpeechRecognizerInformation> thatLanguageRecognizers = from recognizerInfo in InstalledSpeechRecognizers.All
-                                                                               where recognizerInfo.Language == language
-                                                                               select recognizerInfo;
-            _reco.Recognizer.SetRecognizer(thatLanguageRecognizers.ElementAt(0));
-            _reco.Recognizer.Settings.InitialSilenceTimeout = TimeSpan.FromSeconds(6.0);
-            _reco.Recognizer.Settings.BabbleTimeout = TimeSpan.FromSeconds(4.0);
-            _reco.Recognizer.Settings.EndSilenceTimeout = TimeSpan.FromSeconds(1.2);
+            await _recognizersUI[number].Recognizer.PreloadGrammarsAsync();
         }
 
-        public async Task<SpeechRecognitionResult> StartVoiceReceivingAsync(string language)
+        public async Task SetupRecognizer(int number)
         {
-            ConfigureRecognizer(language);
-            _recoResult = await _reco.RecognizeWithUIAsync();
-            return _recoResult.RecognitionResult;
+            if (StaticData.Languages[number].DefaultGrammarSupport)
+            {
+                IEnumerable<SpeechRecognizerInformation> thatLanguageRecognizers = from recognizerInfo in InstalledSpeechRecognizers.All
+                                                                                   where recognizerInfo.Language == StaticData.Languages[number].RecognizerCode
+                                                                                   select recognizerInfo;
+                _recognizersUI[number].Recognizer.SetRecognizer(thatLanguageRecognizers.ElementAt(0));
+            }
+            else
+            {
+                Uri grammar = new Uri("ms-appx:///Grammars/" + StaticData.Languages[number].FullName + ".grxml", UriKind.Absolute);
+                _recognizersUI[number].Recognizer.Grammars.AddGrammarFromUri("words", grammar);
+                await PreloadGrammarsAsync(number);
+            }
+            _recognizersUI[number].Recognizer.Settings.InitialSilenceTimeout = TimeSpan.FromSeconds(6.0);
+            _recognizersUI[number].Recognizer.Settings.BabbleTimeout = TimeSpan.FromSeconds(4.0);
+            _recognizersUI[number].Recognizer.Settings.EndSilenceTimeout = TimeSpan.FromSeconds(1.2);
+            _recognizersUI[number].Settings.ReadoutEnabled = false;
+            _recognizersUI[number].Settings.ShowConfirmation = false;
+        }
+
+        public async Task ReceiveVoiceAsync(int number)
+        {
+            _recoResult = await _recognizersUI[number].RecognizeWithUIAsync();
+            StaticData.SourceText = _recoResult.RecognitionResult.Text;
+        }
+
+        private static SpeechRecognizerUI CreateSpeechRecognizerUI()
+        {
+            return new SpeechRecognizerUI();
         }
 
         public AudioReceiver()
         {
-            _reco = new SpeechRecognizerUI();
-            _reco.Settings.ReadoutEnabled = false;
-            _reco.Settings.ShowConfirmation = false;
+            _recognizersUI = StaticData.Languages.Select(language => CreateSpeechRecognizerUI()).ToList();
         }
     }
 }

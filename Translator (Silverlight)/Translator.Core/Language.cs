@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Translator.Core
+﻿namespace Translator.Core
 {
     public class Language
     {
@@ -14,22 +8,14 @@ namespace Translator.Core
 
         public string FullName { get; set; }
 
-        public int Position { get; set; }
+        public bool DefaultGrammarSupport { get; set; }
 
-        public Language(string recognizerCode, string translatorCode, string fullName, int position)
+        public Language(string recognizerCode, string translatorCode, string fullName, bool defaultGrammarSupport)
         {
             RecognizerCode = recognizerCode;
             TranslatorCode = translatorCode;
             FullName = fullName;
-            Position = position;
-        }
-
-        public Language()
-        {
-            RecognizerCode = "default recognizer code";
-            TranslatorCode = "default translator code";
-            FullName = "default full name";
-            Position = 0;
+            DefaultGrammarSupport = defaultGrammarSupport;
         }
     }
 }

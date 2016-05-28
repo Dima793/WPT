@@ -1,156 +1,87 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 using Translator.Core;
-using Windows.UI.Popups;
-using Windows.Phone;
-using Windows.Phone.Speech.Recognition;
-using Microsoft.Phone.Controls;
 
 namespace Translator.UI
 {
     public class MainPageViewModel : INotifyPropertyChanged
     {
-        private bool _canListen = true;
-
         public string StartButtonContent => "Listen";
-
         public string TranslateButtonContent => "Translate";
+        private bool _translating = false;
+        private bool _listening = false;
+        private Language _lastSourceLanguage;
+        private Language _lastTargetLanguage;
 
-        public bool CanListen => this._canListen;
-
-        //public bool CanTranslate => _inputText != String.Empty;
-
-        public ICommand GoToSpeakerCommand { get; set; }
-
+        public Commands.RelayCommand GoToHistoryCommand { get; set; }
+        public Commands.RelayCommand GoToSpeakerCommand { get; set; }
         public Commands.RelayCommand ListenUserSpeechCommand { get; set; }
-
         public Commands.RelayCommand TranslateCommand { get; set; }
 
-        public Core.Language LastSourceLanguage { get; set; }
-
-        public Core.Language LastTargetLanguage { get; set; }
-
         private readonly AudioReceiverManager _audioRecevierManager;
+        private readonly WebTranslator _translator;
 
-        private readonly Core.Translator _translator;
-
-        private string _receivedText;
-
-        private string _inputText;
-
-        private string _outputText;
-
-        private ObservableCollection<Language> _sourceLanguages;
-
-        private ObservableCollection<Language> _targetLanguages;
-
-        private Core.Language _currentSourceLanguage;
-
-        private Core.Language _currentTargetLanguage;
-
-        public string InputText
+        public List<Language> Languages
         {
-            get
-            {
-                return _inputText;
-            }
+            get { return StaticData.Languages; }
+        }
+
+        public string SourceText
+        {
+            get { return StaticData.SourceText; }
 
             set
             {
-                if (_inputText == value) return;
-                _inputText = value;
-                OnPropertyChanged("InputText");
+
+                if (StaticData.SourceText == value) return;
+                StaticData.SourceText = value;
+                OnPropertyChanged("SourceText");
             }
         }
 
-        public string OutputText
+        public string FinalText
         {
-            get
-            {
-                return _outputText;
-            }
+            get { return StaticData.FinalText; }
 
             set
             {
-                if (_outputText == value) return;
-                _outputText = value;
-                OnPropertyChanged("OutputText");
+                if (StaticData.FinalText == value) return;
+                StaticData.FinalText = value;
+                OnPropertyChanged("FinalText");
             }
         }
 
-        public ObservableCollection<Language> SourceLanguages
+        public Language CurrentSourceLanguage
         {
-            get
-            {
-                return _sourceLanguages;
-            }
+            get { return StaticData.SourceLanguage; }
 
             set
             {
-                if (_sourceLanguages == value) return;
-                _sourceLanguages = value;
-                OnPropertyChanged("SourceLanguages");
-            }
-        }
-
-        public ObservableCollection<Language> TargetLanguages
-        {
-            get
-            {
-                return _targetLanguages;
-            }
-
-            set
-            {
-                if (_targetLanguages == value) return;
-                _targetLanguages = value;
-                OnPropertyChanged("TargetLanguages");
-            }
-        }
-
-        public Core.Language CurrentSourceLanguage
-        {
-            get
-            {
-                return _currentSourceLanguage;
-            }
-            set
-            {
-                if (_currentSourceLanguage == value) return;
-                _currentSourceLanguage = value;
-                if (LastSourceLanguage != null)
+                if (StaticData.SourceLanguage == value) return;
+                _lastSourceLanguage = StaticData.SourceLanguage;
+                StaticData.SourceLanguage = value;
+                if (StaticData.SourceLanguage == StaticData.TargetLanguage)
                 {
-                    _targetLanguages.Insert(LastSourceLanguage.Position, LastSourceLanguage);
+                    CurrentTargetLanguage = _lastSourceLanguage;
                 }
-                _targetLanguages.RemoveAt(_currentSourceLanguage.Position);
-                LastSourceLanguage = _currentSourceLanguage;
+                OnPropertyChanged("CurrentSourceLanguage");
             }
         }
 
-        public Core.Language CurrentTargetLanguage
+        public Language CurrentTargetLanguage
         {
-            get
-            {
-                return _currentTargetLanguage;
-            }
+            get { return StaticData.TargetLanguage; }
+
             set
             {
-                if (_currentTargetLanguage == value) return;
-                _currentTargetLanguage = value;
-                //if (LastTargetLanguage != null)
-                //{
-                //    _sourceLanguages.Insert(LastTargetLanguage.Position, LastTargetLanguage);
-                //}
-                //_sourceLanguages.RemoveAt(_currentTargetLanguage.Position);
-                LastTargetLanguage = _currentTargetLanguage;
+                if (StaticData.TargetLanguage == value) return;
+                _lastTargetLanguage = StaticData.TargetLanguage;
+                StaticData.TargetLanguage = value;
+                if (StaticData.TargetLanguage == StaticData.SourceLanguage)
+                {
+                    CurrentSourceLanguage = _lastTargetLanguage;
+                }
+                OnPropertyChanged("CurrentTargetLanguage");
             }
         }
 
@@ -158,77 +89,69 @@ namespace Translator.UI
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void ChangeCanListen()
+        public bool CanListen
         {
-            _canListen = !_canListen;
+            get { return (!_listening && !_translating); }
+        }
+
+        public bool CanTranslate
+        {
+            get { return (CanListen && !string.IsNullOrEmpty(SourceText)); }
+        }
+
+        private bool CanSpeakSourceText
+        {
+            get { return (CanListen && !string.IsNullOrEmpty(FinalText)); }
+        }
+
+        private void ChangeListening()
+        {
+            _listening = !_listening;
+            ListenUserSpeechCommand.RaiseCanExecuteChanged();
+            TranslateCommand.RaiseCanExecuteChanged();
+        }
+
+        private void ChangeTranslating()
+        {
+            _translating = !_translating;
+            TranslateCommand.RaiseCanExecuteChanged();
             ListenUserSpeechCommand.RaiseCanExecuteChanged();
         }
 
         public async void GetUserSpeech(object obj)
         {
-            ChangeCanListen();
-            _receivedText = await _audioRecevierManager.GetUserSpeech(_currentSourceLanguage.RecognizerCode);
-            InputText = _receivedText;
-            ChangeCanListen();
+            ChangeListening();
+            await _audioRecevierManager.GetUserSpeech();
+            OnPropertyChanged("SourceText");
+            ChangeListening();
         }
 
-        public void Translate(object obj)
-        {
-            _translator.Translate(InputText, "en", "ge");//target language code
-        }
-
-        void _translator_TranslationComplete(object sender, TranslationCompleteEventArgs e)
-        {
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                OutputText = e.ResultText;
-            });
-        }
-
-        void _translator_TranslationFailed(object sender, TranslationFailedEventArgs e)
-        {
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                MessageBox.Show("Bummer, the translation failed. \n " + e.ErrorDescription);
-            });
+        private async void Translate(object parameter)
+        {   
+            FinalText = string.Empty;
+            ChangeTranslating();
+            await _translator.TranslateAsync();
+            OnPropertyChanged("FinalText");
+            ChangeTranslating();
         }
 
         public MainPageViewModel()
         {
-            InputText = "Input\n";
-            OutputText = "Output";
             _audioRecevierManager = new AudioReceiverManager();
-            _translator = new Core.Translator();
-            _translator.TranslationComplete += _translator_TranslationComplete;
-            _translator.TranslationFailed += _translator_TranslationFailed;
-            SourceLanguages = new ObservableCollection<Language>(_translator.Languages);
-            TargetLanguages = new ObservableCollection<Language>(_translator.Languages);
-            LastSourceLanguage = null;
-            LastTargetLanguage = null;
-            CurrentSourceLanguage = SourceLanguages[0];
-            CurrentTargetLanguage = TargetLanguages[0];
+            _translator = new WebTranslator();
+            _lastSourceLanguage = null;
+            _lastTargetLanguage = null;
+            OnPropertyChanged("CurrentSourceLanguage");
+            OnPropertyChanged("CurrentTargetLanguage");
+            OnPropertyChanged("SourceText");
+            OnPropertyChanged("FinalText");
             ListenUserSpeechCommand = new Commands.RelayCommand(GetUserSpeech, param => CanListen);
-            TranslateCommand = new Commands.RelayCommand(Translate);//, param => CanTranslate
-
-            GoToSpeakerCommand = Navigator.GoToCommand("/SpeakPage.xaml");
-
-            int i = 0;
-            var Lang = (from m in InstalledSpeechRecognizers.All select m).ToList();
-            foreach (var item in Lang)
-            {
-                InputText += item.Language + " ";
-                if (++i == 5)
-                {
-                    InputText += "\n";
-                    i = 0;
-                }
-            }
+            TranslateCommand = new Commands.RelayCommand(Translate, param => CanTranslate);
+            GoToHistoryCommand = Navigator.GoToCommand("/HistoryPage.xaml", param => CanSpeakSourceText);
+            GoToSpeakerCommand = Navigator.GoToCommand("/SpeakPage.xaml", param => CanTranslate);
         }
     }
 }

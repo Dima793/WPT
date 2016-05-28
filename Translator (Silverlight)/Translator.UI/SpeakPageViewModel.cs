@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 using Translator.Core;
@@ -9,36 +8,38 @@ namespace Translator.UI
     public class SpeakPageViewModel : INotifyPropertyChanged
     {
         private readonly TextSpeaker _speaker;
-
-        public List<Language> Languages { get; set; }
-
-        public ObservableCollection<HistoryEntry> AutoCompleteOptions => HistoryManager.Entries;
-
-        private Language _currentLanguage;
+        public List<Language> Languages
+        {
+            get
+            {
+                return StaticData.Languages;
+            }
+        }
 
         public Language CurrentLanguage
         {
-            get { return _currentLanguage; }
+            get { return StaticData.SourceLanguage; }
 
             set
             {
-                if (_currentLanguage == value) return;
-                _currentLanguage = value;
-                _speaker.SetLanguage(value.FullName);
+                if (StaticData.SourceLanguage == value) return;
+                if (value == StaticData.TargetLanguage)
+                {
+                    StaticData.TargetLanguage = StaticData.SourceLanguage;
+                }
+                StaticData.SourceLanguage = value;
                 OnPropertyChanged("CurrentLanguage");
             }
         }
 
-        private string _message;
-
         public string Message
         {
-            get { return _message; }
+            get { return StaticData.SourceText; }
 
             set
             {
-                if (_message == value) return;
-                _message = value;
+                if (StaticData.SourceText == value) return;
+                StaticData.SourceText = value;
                 OnPropertyChanged("Message");
             }
         }
@@ -51,10 +52,10 @@ namespace Translator.UI
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void Pronounce()
+        private async void Pronounce(object parameter)
         {
-            _speaker.Speak(_message);
-            HistoryManager.AddEntry(new HistoryEntry(CurrentLanguage.FullName, _message));
+            _speaker.Speak();
+            await HistoryPageViewModel.AddEntry(new HistoryEntry(CurrentLanguage.FullName, StaticData.SourceText));
         }
 
         public ICommand GoToHistoryCommand { get; set; }
@@ -62,12 +63,10 @@ namespace Translator.UI
 
         public SpeakPageViewModel()
         {
-            Message = "Having fun";
             _speaker = new TextSpeaker();
-            Languages = _speaker.Languages;
-            CurrentLanguage = Languages[0];
-
-            PronounceCommand = new RelayCommand(Pronounce);
+            OnPropertyChanged("Message");
+            OnPropertyChanged("CurrentLanguage");
+            PronounceCommand = new Commands.RelayCommand(Pronounce);
             GoToHistoryCommand = Navigator.GoToCommand("/HistoryPage.xaml");
             GoToTranslatorCommand = Navigator.GoToCommand("/MainPage.xaml");
         }

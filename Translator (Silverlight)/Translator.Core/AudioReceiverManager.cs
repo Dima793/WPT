@@ -10,36 +10,30 @@ namespace Translator.Core
 {
     public class AudioReceiverManager
     {
-        private readonly AudioReceiver _audioRecevier = new AudioReceiver();
+        private readonly AudioReceiver _audioRecevier;
 
-        //private SpeechRecognitionResult _recoResult;
-
-        //private bool _resultIsAcceptable;
-
-        public async Task<string> GetUserSpeech(string language)
+        private List<bool> _recognizerUIReady;
+        
+        public async Task GetUserSpeech()
         {
-            if ((language == "ru-RU") || (language == "ja-JP"))
+            int number = StaticData.Languages.IndexOf(StaticData.SourceLanguage);
+            if (!_recognizerUIReady[number])
             {
-                MessageBox.Show("Sorry, this language is not yet supported");
-                return String.Empty;
+                await _audioRecevier.SetupRecognizer(number);
+                _recognizerUIReady[number] = true;
             }
-            //do
-            //{
-            //    _recoResult = await _audioRecevier.StartVoiceReceivingAsync();
-            //    _resultIsAcceptable = true;
-            //    if (_recoResult.TextConfidence == SpeechRecognitionConfidence.Rejected)
-            //    {
-            //        _resultIsAcceptable = false;
-            //        MessageBox.Show("Sorry, didn't catch that. \n\nSay again.");
-            //    }
-            //    else if (_recoResult.TextConfidence == SpeechRecognitionConfidence.Low)
-            //    {
-            //        _resultIsAcceptable = false;
-            //        MessageBox.Show("Not sure what you said. \n\nSay again.");
-            //    }
-            //} while (_resultIsAcceptable == false);
-            //return _recoResult.Text;
-            return (await _audioRecevier.StartVoiceReceivingAsync(language)).Text;
+            await _audioRecevier.ReceiveVoiceAsync(number);
+        }
+
+        private bool CreateFalseBool()
+        {
+            return new bool();// default is false
+        }
+
+        public AudioReceiverManager()
+        {
+            _audioRecevier = new AudioReceiver();
+            _recognizerUIReady = StaticData.Languages.Select(language => CreateFalseBool()).ToList();
         }
     }
 }
