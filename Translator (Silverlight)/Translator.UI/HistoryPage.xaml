@@ -17,23 +17,20 @@
     <phone:PhoneApplicationPage.DataContext>
         <local:HistoryPageViewModel />
     </phone:PhoneApplicationPage.DataContext>
-    
-    <!--LayoutRoot is the root grid where all page content is placed-->
+
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
             <TextBlock Text="History" Style="{StaticResource PhoneTextExtraLargeStyle}"/>
         </StackPanel>
 
-        <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,0,40,100">
-                <ListBox ItemsSource="{Binding Entries}" Height="Auto" Width ="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                <ListBox ItemsSource="{Binding HistoryEntries}" Height="Auto" Width ="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Margin="10">
@@ -50,7 +47,8 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
             </ScrollViewer>
-            <Button x:Name="GoToHistoryButton" Content="Clear History" Width="220" Height="80" HorizontalAlignment="Center" VerticalAlignment="Bottom"  Command="{Binding ClearHistoryCommand}"/>
+            <Button Content="Back to Speak" Width="220" Height="80" HorizontalAlignment="Left" VerticalAlignment="Bottom" Command="{Binding BackToSpeakCommand}"/>
+            <Button Content="Clear History" Width="220" Height="80" HorizontalAlignment="Right" VerticalAlignment="Bottom" Command="{Binding ClearHistoryCommand}"/>
         </Grid>
     </Grid>
 

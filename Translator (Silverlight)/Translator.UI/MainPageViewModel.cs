@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows.Input;
 using Translator.Core;
 
 namespace Translator.UI
@@ -13,8 +14,8 @@ namespace Translator.UI
         private Language _lastSourceLanguage;
         private Language _lastTargetLanguage;
 
-        public Commands.RelayCommand GoToHistoryCommand { get; set; }
-        public Commands.RelayCommand GoToSpeakerCommand { get; set; }
+        public ICommand GoToSpeakerCommand { get; set; }
+
         public Commands.RelayCommand ListenUserSpeechCommand { get; set; }
         public Commands.RelayCommand TranslateCommand { get; set; }
 
@@ -150,8 +151,7 @@ namespace Translator.UI
             OnPropertyChanged("FinalText");
             ListenUserSpeechCommand = new Commands.RelayCommand(GetUserSpeech, param => CanListen);
             TranslateCommand = new Commands.RelayCommand(Translate, param => CanTranslate);
-            GoToHistoryCommand = Navigator.GoToCommand("/HistoryPage.xaml", param => CanSpeakSourceText);
-            GoToSpeakerCommand = Navigator.GoToCommand("/SpeakPage.xaml", param => CanTranslate);
+            GoToSpeakerCommand = Navigator.GoToCommand("/SpeakPage.xaml");
         }
     }
 }

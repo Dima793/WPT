@@ -92,6 +92,7 @@
   <ItemGroup>
     <Compile Include="AudioReceiver.cs" />
     <Compile Include="AudioReceiverManager.cs" />
+    <Compile Include="HistoryManager.cs" />
     <Compile Include="Language.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\BingTranslatorServiceReference\Reference.cs">

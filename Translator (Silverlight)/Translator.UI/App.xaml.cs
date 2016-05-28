@@ -5,11 +5,12 @@ using System.Windows.Markup;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using Translator.Core;
 using Translator.UI.Resources;
 
 namespace Translator.UI
 {
-    public partial class App : Application
+    public partial class App
     {
         public static PhoneApplicationFrame RootFrame { get; private set; }
         
@@ -25,17 +26,15 @@ namespace Translator.UI
             
             if (Debugger.IsAttached)
             {
-                Application.Current.Host.Settings.EnableFrameRateCounter = true;
+                Current.Host.Settings.EnableFrameRateCounter = true;
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
         }
         
-        private async void Application_Launching(object sender, LaunchingEventArgs e)
+        private void Application_Launching(object sender, LaunchingEventArgs e)
         {
-            await HistoryPageViewModel.ReadJsonAsync();
-            HistoryPageViewModel.ConvertJsonToHistoryEntries();
-
+            HistoryManager.ReadHistory();
         }
         
         private void Application_Activated(object sender, ActivatedEventArgs e)
@@ -50,7 +49,7 @@ namespace Translator.UI
         {
         }
         
-        private void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
+        private static void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
             if (Debugger.IsAttached)
             {
@@ -58,7 +57,7 @@ namespace Translator.UI
             }
         }
         
-        private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
+        private static void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
             if (Debugger.IsAttached)
             {
@@ -66,17 +65,17 @@ namespace Translator.UI
             }
         }
         
-        private bool phoneApplicationInitialized = false;
+        private bool _phoneApplicationInitialized;
         
         private void InitializePhoneApplication()
         {
-            if (phoneApplicationInitialized)
+            if (_phoneApplicationInitialized)
                 return;
             RootFrame = new PhoneApplicationFrame();
             RootFrame.Navigated += CompleteInitializePhoneApplication;
             RootFrame.NavigationFailed += RootFrame_NavigationFailed;
             RootFrame.Navigated += CheckForResetNavigation;
-            phoneApplicationInitialized = true;
+            _phoneApplicationInitialized = true;
         }
         
         private void CompleteInitializePhoneApplication(object sender, NavigationEventArgs e)
@@ -86,29 +85,28 @@ namespace Translator.UI
             RootFrame.Navigated -= CompleteInitializePhoneApplication;
         }
 
-        private void CheckForResetNavigation(object sender, NavigationEventArgs e)
+        private static void CheckForResetNavigation(object sender, NavigationEventArgs e)
         {
             if (e.NavigationMode == NavigationMode.Reset)
                 RootFrame.Navigated += ClearBackStackAfterReset;
         }
 
-        private void ClearBackStackAfterReset(object sender, NavigationEventArgs e)
+        private static void ClearBackStackAfterReset(object sender, NavigationEventArgs e)
         {
             RootFrame.Navigated -= ClearBackStackAfterReset;
             if (e.NavigationMode != NavigationMode.New && e.NavigationMode != NavigationMode.Refresh)
                 return;
             while (RootFrame.RemoveBackEntry() != null)
             {
-                ;
             }
         }
         
-        private void InitializeLanguage()
+        private static void InitializeLanguage()
         {
             try
             {
                 RootFrame.Language = XmlLanguage.GetLanguage(AppResources.ResourceLanguage);
-                FlowDirection flow = (FlowDirection)Enum.Parse(typeof(FlowDirection), AppResources.ResourceFlowDirection);
+                var flow = (FlowDirection)Enum.Parse(typeof(FlowDirection), AppResources.ResourceFlowDirection);
                 RootFrame.FlowDirection = flow;
             }
             catch

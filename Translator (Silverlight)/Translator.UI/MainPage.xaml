@@ -68,8 +68,6 @@
             <TextBox Grid.Row="5" Name="Output" Text="{Binding FinalText, Mode=TwoWay}" VerticalAlignment="Stretch"/>
             <Button Grid.Row="6" Content="Go to SpeakPage" Width="225" Height="80" HorizontalAlignment="Right"
                 VerticalAlignment="Bottom" Command="{Binding GoToSpeakerCommand}"/>
-            <Button Grid.Row="6" Content="Go to History" Width="225" Height="80" HorizontalAlignment="Left"
-                VerticalAlignment="Bottom" Command="{Binding GoToHistoryCommand}"/>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

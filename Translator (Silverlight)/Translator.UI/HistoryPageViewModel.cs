@@ -1,83 +1,26 @@
-﻿using Microsoft.Phone.Controls;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Json;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Collections.ObjectModel;
+using System.Windows.Input;
 using Translator.Core;
-using Windows.Storage;
 
 namespace Translator.UI
 {
     public class HistoryPageViewModel
     {
-        private const string Jsonfilename = "history.json";
+        public static ICommand ClearHistoryCommand { get; set; }
+        public static ICommand BackToSpeakCommand { get; set; }
 
-        public static List<HistoryEntry> Entries { get; set; }
-        private static string _jsonContent;
-        public static Commands.RelayCommand ClearHistoryCommand { get; set; }
+        public static ObservableCollection<HistoryEntry> HistoryEntries => HistoryManager.Entries;
 
         static HistoryPageViewModel()
         {
-            ClearHistoryCommand = new Commands.RelayCommand(ClearHistory);
+            ClearHistoryCommand = new RelayCommand(ClearHistory);
+            BackToSpeakCommand = Navigator.GoToCommand("/SpeakPage.xaml");
         }
 
-        public static async Task ReadJsonAsync()
+        private static void ClearHistory()
         {
-            try
-            {
-                var myStream = await ApplicationData.Current.LocalFolder.OpenStreamForReadAsync(Jsonfilename);
-                using (var reader = new StreamReader(myStream))
-                {
-                    _jsonContent = await reader.ReadToEndAsync();
-                }
-            }
-            catch (Exception)
-            {
-            }
-
-        }
-
-        public static void ConvertJsonToHistoryEntries()
-        {
-            try
-            {
-                var serializer = new DataContractJsonSerializer(typeof(List<HistoryEntry>));
-                using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(_jsonContent)))
-                {
-                    Entries = serializer.ReadObject(ms) as List<HistoryEntry>;
-                }
-            }
-            catch (Exception)
-            {
-            }
-            if (Entries == null)
-                Entries = new List<HistoryEntry>();
-        }
-
-        public static async Task WriteJsonAsync()
-        {
-            var serializer = new DataContractJsonSerializer(typeof(List<HistoryEntry>));
-            using (var stream = await ApplicationData.Current.LocalFolder.OpenStreamForWriteAsync(
-                Jsonfilename, CreationCollisionOption.ReplaceExisting))
-            {
-                serializer.WriteObject(stream, Entries);
-            }
-        }
-
-        public static async Task AddEntry(HistoryEntry entry)
-        {
-            Entries.Add(entry);
-            await WriteJsonAsync();
-        }
-
-        private static async void ClearHistory(object parameter)
-        {
-            Entries.Clear();
-            (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/SpeakPage.xaml", UriKind.Relative));
-            await WriteJsonAsync();
+            HistoryManager.ClearHistory();
+            Navigator.GoToCommand("/SpeakPage.xaml").Execute(null);
         }
     }
 }
