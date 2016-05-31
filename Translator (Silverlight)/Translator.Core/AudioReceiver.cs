@@ -17,7 +17,7 @@ namespace Translator.Core
             await _recognizersUI[number].Recognizer.PreloadGrammarsAsync();
         }
 
-        public async Task SetupRecognizer(int number)
+        public async Task SetupRecognizerAsync(int number)
         {
             if (StaticData.Languages[number].DefaultGrammarSupport)
             {

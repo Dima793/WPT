@@ -122,15 +122,15 @@ namespace Translator.UI
             ListenUserSpeechCommand.RaiseCanExecuteChanged();
         }
 
-        public async void GetUserSpeech(object obj)
+        public async void GetUserSpeechAsync(object obj)
         {
             ChangeListening();
-            await _audioRecevierManager.GetUserSpeech();
+            await _audioRecevierManager.GetUserSpeechAsync();
             OnPropertyChanged("SourceText");
             ChangeListening();
         }
 
-        private async void Translate(object parameter)
+        private async void TranslateAsync(object parameter)
         {   
             FinalText = string.Empty;
             ChangeTranslating();
@@ -149,8 +149,8 @@ namespace Translator.UI
             OnPropertyChanged("CurrentTargetLanguage");
             OnPropertyChanged("SourceText");
             OnPropertyChanged("FinalText");
-            ListenUserSpeechCommand = new Commands.RelayCommand(GetUserSpeech, param => CanListen);
-            TranslateCommand = new Commands.RelayCommand(Translate, param => CanTranslate);
+            ListenUserSpeechCommand = new Commands.RelayCommand(GetUserSpeechAsync, param => CanListen);
+            TranslateCommand = new Commands.RelayCommand(TranslateAsync, param => CanTranslate);
             GoToSpeakerCommand = Navigator.GoToCommand("/SpeakPage.xaml");
         }
     }

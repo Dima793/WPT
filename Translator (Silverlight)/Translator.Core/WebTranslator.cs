@@ -22,18 +22,17 @@ namespace Translator.Core
 
         public async Task TranslateAsync()
         {
-            if (!_initialized)
-            {
-                //Get Client Id and Client Secret from https://datamarket.azure.com/developer/applications/
-                //Refer obtaining AccessToken (http://msdn.microsoft.com/en-us/library/hh454950.aspx) 
-                _admAuth = await AdmAuthentication.CreateAsync("793", "Lyt5DpPuV3qNeItKqDByVjiLoGEUQkSuaLreFtWOHDQ=");
-                _initialized = true;
-            }
-
             AdmAccessToken admToken;
             string headerValue;
             try
             {
+                if (!_initialized)
+                {
+                    //Get Client Id and Client Secret from https://datamarket.azure.com/developer/applications/
+                    //Refer obtaining AccessToken (http://msdn.microsoft.com/en-us/library/hh454950.aspx) 
+                    _admAuth = await AdmAuthentication.CreateAsync("793", "Lyt5DpPuV3qNeItKqDByVjiLoGEUQkSuaLreFtWOHDQ=");
+                    _initialized = true;
+                }
                 admToken = _admAuth.GetAccessToken();
                 headerValue = "Bearer " + admToken.access_token;
                 await TranslateMethod(headerValue);
@@ -126,8 +125,15 @@ namespace Translator.Core
         {
             var request = string.Format("grant_type=client_credentials&client_id={0}&client_secret={1}&scope=http://api.microsofttranslator.com",
                 HttpUtility.UrlEncode(clientId), HttpUtility.UrlEncode(clientSecret));
-            var token = await HttpPostAsync(DatamarketAccessUri, request);
-            return new AdmAuthentication(clientId, clientSecret, token, request);
+            try
+            {
+                var token = await HttpPostAsync(DatamarketAccessUri, request);
+                return new AdmAuthentication(clientId, clientSecret, token, request);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public AdmAuthentication(string clientId, string clientSecret, AdmAccessToken token, string request)

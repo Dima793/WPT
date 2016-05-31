@@ -14,12 +14,12 @@ namespace Translator.Core
 
         private List<bool> _recognizerUIReady;
         
-        public async Task GetUserSpeech()
+        public async Task GetUserSpeechAsync()
         {
             int number = StaticData.Languages.IndexOf(StaticData.SourceLanguage);
             if (!_recognizerUIReady[number])
             {
-                await _audioRecevier.SetupRecognizer(number);
+                await _audioRecevier.SetupRecognizerAsync(number);
                 _recognizerUIReady[number] = true;
             }
             await _audioRecevier.ReceiveVoiceAsync(number);

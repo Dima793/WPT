@@ -110,9 +110,9 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Grammars\Russian.grxml">
+    <Content Include="Grammars\Russian.grxml">
       <SubType>Designer</SubType>
-    </None>
+    </Content>
     <None Include="Service References\BingTranslatorServiceReference\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>

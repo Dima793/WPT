@@ -11,7 +11,7 @@ namespace Translator.Core
             new Language("de-DE", "de", "German", true),
             new Language("fr-FR", "fr", "French", true),
             new Language("it-IT", "it", "Italian", true),
-            //new Language("ru-RU", "ru", "Russian", false),
+            new Language("ru-RU", "ru", "Russian", false),
             new Language("es-ES", "es", "Spanish", true)
         };
 
