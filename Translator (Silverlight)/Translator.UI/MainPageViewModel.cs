@@ -24,10 +24,7 @@ namespace Translator.UI
         private readonly AudioReceiverManager _audioRecevierManager;
         private readonly WebTranslator _translator;
 
-        public List<Language> Languages
-        {
-            get { return StaticData.Languages; }
-        }
+        public List<Language> Languages { get { return StaticData.Languages; } }
 
         public string SourceText
         {
@@ -100,18 +97,27 @@ namespace Translator.UI
             get { return (!_listening && !_translating); }
         }
 
+        public bool canDoSomething { get { return CanDoSomething; } }
+
+        private void UpdateUI()
+        {
+            ListenUserSpeechCommand.RaiseCanExecuteChanged();
+            TranslateCommand.RaiseCanExecuteChanged();
+            SpeakTargetTextCommand.RaiseCanExecuteChanged();
+            OnPropertyChanged("canDoSomething");
+        }
+
         private void ChangeListening()
         {
             _listening = !_listening;
-            ListenUserSpeechCommand.RaiseCanExecuteChanged();
-            TranslateCommand.RaiseCanExecuteChanged();
+            SpeakSourceTextCommand.RaiseCanExecuteChanged();
+            UpdateUI();
         }
 
         private void ChangeTranslating()
         {
             _translating = !_translating;
-            TranslateCommand.RaiseCanExecuteChanged();
-            ListenUserSpeechCommand.RaiseCanExecuteChanged();
+            UpdateUI();
         }
 
         public async void GetUserSpeechAsync()
@@ -123,12 +129,28 @@ namespace Translator.UI
         }
 
         private async void TranslateAsync()
-        {   
+        {
             FinalText = string.Empty;
             ChangeTranslating();
             await _translator.TranslateAsync();
             OnPropertyChanged("FinalText");
             ChangeTranslating();
+        }
+
+        private void SpeakSourceText()
+        {
+            StaticData.SpeakText = StaticData.SourceText;
+            StaticData.SpeakLanguage = StaticData.SourceLanguage;
+            StaticData.NeedToSoundTranslator = true;
+            GoToSpeakerCommand.Execute(null);
+        }
+
+        private void SpeakTargetText()
+        {
+            StaticData.SpeakText = StaticData.FinalText;
+            StaticData.SpeakLanguage = StaticData.TargetLanguage;
+            StaticData.NeedToSoundTranslator = true;
+            GoToSpeakerCommand.Execute(null);
         }
 
         public MainPageViewModel()
@@ -143,8 +165,8 @@ namespace Translator.UI
             OnPropertyChanged("FinalText");
             ListenUserSpeechCommand = new Commands.RelayCommand(GetUserSpeechAsync, () => CanDoSomething);
             TranslateCommand = new Commands.RelayCommand(TranslateAsync, () => CanDoSomething);
-            SpeakSourceTextCommand = new Commands.RelayCommand(TranslateAsync, () => CanDoSomething);
-            SpeakTargetTextCommand = new Commands.RelayCommand(TranslateAsync, () => CanDoSomething);
+            SpeakSourceTextCommand = new Commands.RelayCommand(SpeakSourceText, () => CanDoSomething);
+            SpeakTargetTextCommand = new Commands.RelayCommand(SpeakTargetText, () => CanDoSomething);
             GoToSpeakerCommand = Navigator.GoToCommand("/SpeakPage.xaml");
         }
     }

@@ -20,6 +20,8 @@ namespace Translator.Core
             {
                 AddLanguage(current.FullName, current.RecognizerCode);
             }
+
+            SetLanguage(StaticData.SpeakLanguage.FullName);
         }
 
         public async Task Speak(string text)

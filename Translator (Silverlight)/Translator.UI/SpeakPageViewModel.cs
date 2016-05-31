@@ -12,64 +12,70 @@ namespace Translator.UI
     {
         private readonly TextSpeaker _speaker;
 
-        public List<Language> Languages { get; set; }
+        public List<Language> Languages => StaticData.Languages;
 
         public ObservableCollection<HistoryEntry> AutoCompleteOptions => HistoryManager.Entries;
 
-        private Language _currentLanguage;
-
         public Language CurrentLanguage
         {
-            get { return _currentLanguage; }
+            get { return StaticData.SpeakLanguage; }
 
             set
             {
-                if (_currentLanguage == value) return;
-                _currentLanguage = value;
+                if (StaticData.SpeakLanguage == value) return;
+                StaticData.SpeakLanguage = value;
                 _speaker.SetLanguage(value.FullName);
                 OnPropertyChanged("CurrentLanguage");
             }
         }
 
-        private string _message;
-
         public string Message
         {
-            get { return _message; }
+            get { return StaticData.SpeakText; }
 
             set
             {
-                if (_message == value) return;
-                _message = value;
+                if (StaticData.SpeakText == value) return;
+                StaticData.SpeakText = value;
                 OnPropertyChanged("Message");
             }
         }
 
-        private bool _pronounceButtonEnabled;
-
-        public bool PronounceButtonEnabled
+        public bool NotSpeaking
         {
-            get { return _pronounceButtonEnabled; }
+            get { return StaticData.NotSpeaking; }
 
             set
             {
-                if (_pronounceButtonEnabled == value) return;
-                _pronounceButtonEnabled = value;
-                OnPropertyChanged("PronounceButtonEnabled");
+                if (StaticData.NotSpeaking == value) return;
+                StaticData.NotSpeaking = value;
+                HistoryEnabled = StaticData.HistoryLoaded & StaticData.NotSpeaking;
+                OnPropertyChanged("NotSpeaking");
             }
         }
 
-        private bool _historyLoaded;
-
         public bool HistoryLoaded
         {
-            get { return _historyLoaded; }
+            get { return StaticData.HistoryLoaded; }
 
             set
             {
-                if (_historyLoaded == value) return;
-                _historyLoaded = value;
+                if (StaticData.HistoryLoaded == value) return;
+                StaticData.HistoryLoaded = value;
+                HistoryEnabled = StaticData.HistoryLoaded & StaticData.NotSpeaking;
                 OnPropertyChanged("HistoryLoaded");
+            }
+        }
+
+        public bool HistoryEnabled
+        {
+            get { return StaticData.HistoryEnabled; }
+
+            set
+            {
+                if (StaticData.HistoryEnabled == value) return;
+                StaticData.HistoryEnabled = value;
+                OnPropertyChanged("HistoryEnabled");
             }
         }
 
@@ -88,10 +94,15 @@ namespace Translator.UI
 
         private async void Pronounce()
         {
-            PronounceButtonEnabled = false;
-            await _speaker.Speak(_message);
-            HistoryManager.AddEntry(new HistoryEntry(CurrentLanguage.FullName, _message));
-            PronounceButtonEnabled = true;
+            NotSpeaking = false;
+            await _speaker.Speak(StaticData.SpeakText);
+            HistoryManager.AddEntry(new HistoryEntry(CurrentLanguage.FullName, StaticData.SpeakText));
+            NotSpeaking = true;
+            if (StaticData.NeedToSoundTranslator)
+            {
+                StaticData.NeedToSoundTranslator = false;
+                GoToTranslatorCommand.Execute(null);
+            }
         }
 
         public ICommand GoToHistoryCommand { get; set; }
@@ -99,21 +110,24 @@ namespace Translator.UI
 
         public SpeakPageViewModel()
         {
-            Message = "Having fun";
             _speaker = new TextSpeaker();
-            Languages = StaticData.Languages;
-            CurrentLanguage = Languages[0];
 
-            PronounceButtonEnabled = true;
-
-            if (HistoryManager.HistoryLoaded)
+            if (!HistoryLoaded)
             {
-                HistoryLoaded = true;
+                if (HistoryManager.HistoryLoaded)
+                {
+                    HistoryLoaded = true;
+                }
+                else
+                {
+                    HistoryLoaded = false;
+                    HistoryManager.HistoryLoadedHandler += HistoryLoadedEvent;
+                }
             }
-            else
+
+            if (StaticData.NeedToSoundTranslator)
             {
-                HistoryLoaded = false;
-                HistoryManager.HistoryLoadedHandler += HistoryLoadedEvent;
+                Pronounce();
             }
 
             PronounceCommand = new RelayCommand(Pronounce);

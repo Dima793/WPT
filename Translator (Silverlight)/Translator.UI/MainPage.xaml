@@ -53,12 +53,12 @@
             <TextBlock Grid.Row="0" Text="source language" HorizontalAlignment="left" Margin="40,0" />
             <toolkit:ListPicker ItemsSource="{Binding Languages}" SelectedItem="{Binding CurrentSourceLanguage, Mode=TwoWay}"
                 ItemTemplate="{StaticResource ItemTemplate}" FullModeItemTemplate="{StaticResource ItemTemplate}"
-                x:Name="SourceLanguage" FullModeHeader="source language" Grid.Row="1"
+                x:Name="SourceLanguage" FullModeHeader="source language" Grid.Row="1" IsEnabled="{Binding canDoSomething,Mode=TwoWay}"
                 HorizontalAlignment="Left" VerticalAlignment="Top" Width="200"/>
             <TextBlock Grid.Row="0" Text="target language" HorizontalAlignment="Right" Margin="43,0" />
             <toolkit:ListPicker ItemsSource="{Binding Languages}" SelectedItem="{Binding CurrentTargetLanguage, Mode=TwoWay}"
             	ItemTemplate="{StaticResource ItemTemplate}" FullModeItemTemplate="{StaticResource ItemTemplate}"
-            	x:Name="TargetLanguage" FullModeHeader="target Language" Grid.Row="1"
+            	x:Name="TargetLanguage" FullModeHeader="target Language" Grid.Row="1" IsEnabled="{Binding canDoSomething,Mode=TwoWay}"
                 HorizontalAlignment="Right" VerticalAlignment="Top" Width="200"/>
             <Button Grid.Row="2" Height="80" Command="{Binding ListenUserSpeechCommand}" 
                 Margin="0,0,80,0" Content="{Binding StartButtonContent}" Click="Button_Click"/>

@@ -70,7 +70,9 @@ namespace Translator.UI
         private void InitializePhoneApplication()
         {
             if (_phoneApplicationInitialized)
+            {
                 return;
+            }
             RootFrame = new PhoneApplicationFrame();
             RootFrame.Navigated += CompleteInitializePhoneApplication;
             RootFrame.NavigationFailed += RootFrame_NavigationFailed;
@@ -81,21 +83,27 @@ namespace Translator.UI
         private void CompleteInitializePhoneApplication(object sender, NavigationEventArgs e)
         {
             if (RootVisual != RootFrame)
+            {
                 RootVisual = RootFrame;
+            }
             RootFrame.Navigated -= CompleteInitializePhoneApplication;
         }
 
         private static void CheckForResetNavigation(object sender, NavigationEventArgs e)
         {
             if (e.NavigationMode == NavigationMode.Reset)
+            {
                 RootFrame.Navigated += ClearBackStackAfterReset;
+            }
         }
 
         private static void ClearBackStackAfterReset(object sender, NavigationEventArgs e)
         {
             RootFrame.Navigated -= ClearBackStackAfterReset;
             if (e.NavigationMode != NavigationMode.New && e.NavigationMode != NavigationMode.Refresh)
+            {
                 return;
+            }
             while (RootFrame.RemoveBackEntry() != null)
             {
             }

@@ -19,14 +19,12 @@ namespace Translator.Core
 
         public async Task SetupRecognizerAsync(int number)
         {
-            if (StaticData.Languages[number].DefaultGrammarSupport)
-            {
-                IEnumerable<SpeechRecognizerInformation> thatLanguageRecognizers = from recognizerInfo in InstalledSpeechRecognizers.All
-                                                                                   where recognizerInfo.Language == StaticData.Languages[number].RecognizerCode
-                                                                                   select recognizerInfo;
-                _recognizersUI[number].Recognizer.SetRecognizer(thatLanguageRecognizers.ElementAt(0));
-            }
-            else
+            IEnumerable<SpeechRecognizerInformation> thatLanguageRecognizers = from recognizerInfo in InstalledSpeechRecognizers.All
+                                                                               where recognizerInfo.Language == StaticData.Languages[number].RecognizerCode
+                                                                               select recognizerInfo;
+            _recognizersUI[number].Recognizer.SetRecognizer(thatLanguageRecognizers.ElementAt(0));
+
+            if (!StaticData.Languages[number].DefaultGrammarSupport)
             {
                 Uri grammar = new Uri("ms-appx:///Grammars/" + StaticData.Languages[number].FullName + ".grxml", UriKind.Absolute);
                 _recognizersUI[number].Recognizer.Grammars.AddGrammarFromUri("words", grammar);

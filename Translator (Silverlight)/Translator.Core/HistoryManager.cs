@@ -34,9 +34,8 @@ namespace Translator.Core
 
         private static void OnHistoryLoaded()
         {
-            var handler = HistoryLoadedHandler;
             HistoryLoaded = true;
-            handler?.Invoke(null, null);
+            HistoryLoadedHandler?.Invoke(null, null);
         }
 
         public static async void WriteHistory()
@@ -87,7 +86,9 @@ namespace Translator.Core
                 // ignored
             }
             if (Entries == null)
+            {
                 Entries = new ObservableCollection<HistoryEntry>(); // If history is empty.
+            }
         }
 
         private static async Task WriteJsonAsync()
