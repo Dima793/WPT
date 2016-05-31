@@ -98,6 +98,11 @@ namespace Translator.UI
             await _speaker.Speak(StaticData.SpeakText);
             HistoryManager.AddEntry(new HistoryEntry(CurrentLanguage.FullName, StaticData.SpeakText));
             NotSpeaking = true;
+            if (StaticData.NeedToSoundTranslator)
+            {
+                StaticData.NeedToSoundTranslator = false;
+                GoToTranslatorCommand.Execute(null);
+            }
         }
 
         public ICommand GoToHistoryCommand { get; set; }
@@ -123,7 +128,6 @@ namespace Translator.UI
             if (StaticData.NeedToSoundTranslator)
             {
                 Pronounce();
-                StaticData.NeedToSoundTranslator = false;
             }
 
             PronounceCommand = new RelayCommand(Pronounce);

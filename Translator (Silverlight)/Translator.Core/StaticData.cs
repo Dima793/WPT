@@ -21,7 +21,7 @@ namespace Translator.Core
 
         public static string SourceText { get; set; } = "Enter here";
 
-        public static string FinalText { get; set; } = "Receive from here";
+        public static string FinalText { get; set; } = "Receive here";
 
         public static Language SpeakLanguage { get; set; } = Languages[0];
 

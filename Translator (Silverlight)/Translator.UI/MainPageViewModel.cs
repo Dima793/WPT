@@ -24,10 +24,7 @@ namespace Translator.UI
         private readonly AudioReceiverManager _audioRecevierManager;
         private readonly WebTranslator _translator;
 
-        public List<Language> Languages
-        {
-            get { return StaticData.Languages; }
-        }
+        public List<Language> Languages { get { return StaticData.Languages; } }
 
         public string SourceText
         {
@@ -100,18 +97,27 @@ namespace Translator.UI
             get { return (!_listening && !_translating); }
         }
 
+        public bool canDoSomething { get { return CanDoSomething; } }
+
+        private void UpdateUI()
+        {
+            ListenUserSpeechCommand.RaiseCanExecuteChanged();
+            TranslateCommand.RaiseCanExecuteChanged();
+            SpeakSourceTextCommand.RaiseCanExecuteChanged();
+            SpeakTargetTextCommand.RaiseCanExecuteChanged();
+            OnPropertyChanged("canDoSomething");
+        }
+
         private void ChangeListening()
         {
             _listening = !_listening;
-            ListenUserSpeechCommand.RaiseCanExecuteChanged();
-            TranslateCommand.RaiseCanExecuteChanged();
+            UpdateUI();
         }
 
         private void ChangeTranslating()
         {
             _translating = !_translating;
-            TranslateCommand.RaiseCanExecuteChanged();
-            ListenUserSpeechCommand.RaiseCanExecuteChanged();
+            UpdateUI();
         }
 
         public async void GetUserSpeechAsync()

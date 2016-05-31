@@ -112,6 +112,7 @@
   <ItemGroup>
     <Content Include="Grammars\Russian.grxml">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Service References\BingTranslatorServiceReference\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
