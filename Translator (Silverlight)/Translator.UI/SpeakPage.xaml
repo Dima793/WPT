@@ -26,6 +26,11 @@
         <DataTemplate x:Key="AutoCompletionOptionTemplate">
             <TextBlock Text="{Binding Text}" Foreground="Black"/>
         </DataTemplate>
+        <Style x:Key="AutoCompleteTextBoxStyle" TargetType="TextBox">
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
     </phone:PhoneApplicationPage.Resources>
 
     <Grid x:Name="LayoutRoot" Background="Transparent">
@@ -39,23 +44,39 @@
         </StackPanel>
 
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <TextBlock Text="Language:" Margin="120,70,200,550"/>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="12*"/>
+                <RowDefinition Height="15*"/>
+                <RowDefinition Height="23*"/>
+                <RowDefinition Height="10*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Language:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="25"/>
+
+            <toolkit:ListPicker ItemsSource="{Binding Languages}" SelectedItem="{Binding CurrentLanguage, Mode=TwoWay}"
+                ItemTemplate="{StaticResource LanguageOptionTemplate}" FullModeItemTemplate="{StaticResource LanguageOptionTemplate}" 
+                                FullModeHeader="Text language"  Grid.Row="0" Grid.Column="1" IsEnabled="{Binding NotSpeaking,Mode=TwoWay}"
+                                VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10"/>
 
             <toolkit:AutoCompleteBox ItemsSource="{Binding AutoCompleteOptions}" IsTextCompletionEnabled="True" FilterMode="Contains" 
                                      ValueMemberBinding="{Binding Text}" ItemTemplate="{StaticResource AutoCompletionOptionTemplate}" 
-                                     Margin="28,120,28,400" Text="{Binding Message,Mode=TwoWay}" MaxDropDownHeight="180"/>
-            
-            <toolkit:ListPicker ItemsSource="{Binding Languages}" SelectedItem="{Binding CurrentLanguage, Mode=TwoWay}"
-                ItemTemplate="{StaticResource LanguageOptionTemplate}" FullModeItemTemplate="{StaticResource LanguageOptionTemplate}" 
-                                FullModeHeader="Text language" Margin="230,55,100,560"/>
-            
-            <Button x:Name="PronounceButton" Content="Pronounce" Margin="60,275,60,300" Command="{Binding PronounceCommand}" 
-                    IsEnabled="{Binding PronounceButtonEnabled,Mode=TwoWay}"/>
+                                     Width="400" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Message,Mode=TwoWay}" MaxDropDownHeight="180"
+                                     IsEnabled="{Binding NotSpeaking,Mode=TwoWay}" TextBoxStyle="{StaticResource AutoCompleteTextBoxStyle}"/>
 
-            <Button x:Name="GoToTranslatorButton" Content="Go to Translator" Width="220" Height="80" HorizontalAlignment="Right" 
-                    VerticalAlignment="Bottom" Command="{Binding GoToTranslatorCommand}"/>
-            <Button x:Name="GoToHistoryButton" Content="Go to History" Width="220" Height="80" HorizontalAlignment="Left" 
-                    VerticalAlignment="Bottom" Command="{Binding GoToHistoryCommand}" IsEnabled="{Binding HistoryLoaded,Mode=TwoWay}"/>
+            <Button x:Name="PronounceButton" Content="Pronounce" Command="{Binding PronounceCommand}" Width="200" Height="90"
+                    VerticalAlignment="Top"  IsEnabled="{Binding NotSpeaking,Mode=TwoWay}" Grid.Row="2" Grid.ColumnSpan="2"/>
+
+            <Button x:Name="GoToTranslatorButton" Content="Go to Translator" Width="220" Height="80" HorizontalAlignment="Center" 
+                    VerticalAlignment="Center" Command="{Binding GoToTranslatorCommand}" IsEnabled="{Binding NotSpeaking,Mode=TwoWay}"
+                    Grid.Row="3" Grid.Column="1"/>
+            <Button x:Name="GoToHistoryButton" Content="Go to History" Width="220" Height="80" HorizontalAlignment="Center" 
+                    VerticalAlignment="Center" Command="{Binding GoToHistoryCommand}" IsEnabled="{Binding HistoryEnabled,Mode=TwoWay}"
+                    Grid.Row="3" Grid.Column="0"/>
         </Grid>
     </Grid>
 

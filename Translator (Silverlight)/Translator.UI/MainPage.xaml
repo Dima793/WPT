@@ -61,10 +61,18 @@
             	x:Name="TargetLanguage" FullModeHeader="target Language" Grid.Row="1"
                 HorizontalAlignment="Right" VerticalAlignment="Top" Width="200"/>
             <Button Grid.Row="2" Height="80" Command="{Binding ListenUserSpeechCommand}" 
-                Content="{Binding StartButtonContent}" Click="Button_Click"/>
+                Margin="0,0,80,0" Content="{Binding StartButtonContent}" Click="Button_Click"/>
+            <Button Grid.Row="2" Height="80" Command="{Binding SpeakSourceTextCommand}" 
+                Width="80" HorizontalAlignment="Right" Click="Button_Click">
+                <Image Source="Icons/speaker.png"></Image>
+            </Button>
             <TextBox Grid.Row="3" Name="Input" Text="{Binding SourceText, Mode=TwoWay}" VerticalAlignment="Stretch"/>
             <Button Grid.Row="4" Height="80" Command="{Binding TranslateCommand}" 
-                Content="{Binding TranslateButtonContent}" Click="Button_Click"/>
+                Margin="0,0,80,0" Content="{Binding TranslateButtonContent}" Click="Button_Click"/>
+            <Button Grid.Row="4" Height="80" Command="{Binding SpeakTargetTextCommand}" 
+                Width="80" HorizontalAlignment="Right" Click="Button_Click">
+                <Image Source="Icons/speaker.png"></Image>
+            </Button>
             <TextBox Grid.Row="5" Name="Output" Text="{Binding FinalText, Mode=TwoWay}" VerticalAlignment="Stretch"/>
             <Button Grid.Row="6" Content="Go to SpeakPage" Width="225" Height="80" HorizontalAlignment="Right"
                 VerticalAlignment="Bottom" Command="{Binding GoToSpeakerCommand}"/>

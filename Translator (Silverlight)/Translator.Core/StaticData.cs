@@ -22,5 +22,17 @@ namespace Translator.Core
         public static string SourceText { get; set; } = "Enter here";
 
         public static string FinalText { get; set; } = "Receive from here";
+
+        public static Language SpeakLanguage { get; set; } = Languages[0];
+
+        public static string SpeakText { get; set; } = "I love exams <3";
+
+        public static bool NotSpeaking { get; set; } = true;
+
+        public static bool HistoryLoaded { get; set; } = false;
+
+        public static bool HistoryEnabled { get; set; } = false;
+
+        public static bool NeedToSoundTranslator = false;
     }
 }
