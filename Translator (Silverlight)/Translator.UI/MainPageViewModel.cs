@@ -18,6 +18,8 @@ namespace Translator.UI
 
         public Commands.RelayCommand ListenUserSpeechCommand { get; set; }
         public Commands.RelayCommand TranslateCommand { get; set; }
+        public Commands.RelayCommand SpeakSourceTextCommand { get; set; }
+        public Commands.RelayCommand SpeakTargetTextCommand { get; set; }
 
         private readonly AudioReceiverManager _audioRecevierManager;
         private readonly WebTranslator _translator;
@@ -93,19 +95,9 @@ namespace Translator.UI
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public bool CanListen
+        public bool CanDoSomething
         {
             get { return (!_listening && !_translating); }
-        }
-
-        public bool CanTranslate
-        {
-            get { return (CanListen && !string.IsNullOrEmpty(SourceText)); }
-        }
-
-        private bool CanSpeakSourceText
-        {
-            get { return (CanListen && !string.IsNullOrEmpty(FinalText)); }
         }
 
         private void ChangeListening()
@@ -149,8 +141,10 @@ namespace Translator.UI
             OnPropertyChanged("CurrentTargetLanguage");
             OnPropertyChanged("SourceText");
             OnPropertyChanged("FinalText");
-            ListenUserSpeechCommand = new Commands.RelayCommand(GetUserSpeechAsync, () => CanListen);
-            TranslateCommand = new Commands.RelayCommand(TranslateAsync, () => CanTranslate);
+            ListenUserSpeechCommand = new Commands.RelayCommand(GetUserSpeechAsync, () => CanDoSomething);
+            TranslateCommand = new Commands.RelayCommand(TranslateAsync, () => CanDoSomething);
+            SpeakSourceTextCommand = new Commands.RelayCommand(TranslateAsync, () => CanDoSomething);
+            SpeakTargetTextCommand = new Commands.RelayCommand(TranslateAsync, () => CanDoSomething);
             GoToSpeakerCommand = Navigator.GoToCommand("/SpeakPage.xaml");
         }
     }
