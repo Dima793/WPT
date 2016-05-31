@@ -2,6 +2,7 @@
 using System;
 using System.Windows;
 using System.Windows.Input;
+using Translator.UI.Commands;
 
 namespace Translator.UI
 {

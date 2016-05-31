@@ -1,46 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Translator.UI.Commands
 {
     public class RelayCommand : ICommand
     {
-        private readonly Action<object> _execute;
+        private readonly Action _execute;
+        private readonly Func<bool> _canExecute;
+        public event EventHandler CanExecuteChanged;
 
-        private readonly Predicate<object> _canExecute;
-
-        public void RaiseCanExecuteChanged()
+        public RelayCommand(Action execute) : this(execute, null)
         {
-            if (CanExecuteChanged != null)
-                CanExecuteChanged(this, new EventArgs());
+        }
+
+        public RelayCommand(Action execute, Func<bool> canExecute)
+        {
+            _execute = execute;
+            _canExecute = canExecute;
         }
 
         public bool CanExecute(object parameter)
         {
-            return this._canExecute != null && this._canExecute(parameter);
+            return _canExecute == null || _canExecute();
         }
 
         public void Execute(object parameter)
         {
-            this._execute(parameter);
+            _execute();
         }
 
-        public event EventHandler CanExecuteChanged;
-
-        public RelayCommand(Action<object> execute, Predicate<object> canExecute)
+        public void RaiseCanExecuteChanged()
         {
-            this._execute = execute;
-            this._canExecute = canExecute;
-        }
-
-        public RelayCommand(Action<object> execute)
-        {
-            this._execute = execute;
-            this._canExecute = o => true;
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 using Translator.Core;
+using Translator.UI.Commands;
 
 namespace Translator.UI
 {
